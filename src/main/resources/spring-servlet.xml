@@ -19,8 +19,9 @@ http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
     </context:component-scan>
 	<mvc:annotation-driven />
 	
-	<!-- 静态资源映射
+	
     <mvc:resources mapping="/resources/**" location="/WEB-INF/resources/"/>
+    <!-- 静态资源映射
     <mvc:resources mapping="/plugins/**" location="/WEB-INF/plugins/"/>
     <mvc:resources mapping="/tags/**" location="/WEB-INF/tags/"/> -->
     

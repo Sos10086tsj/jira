@@ -7,9 +7,11 @@ import lombok.ToString;
 /**
  * Description: 
  * @author Paris
- * @date Jan 13, 20154:29:51 PM
+ * @date Jan 14, 201510:09:46 AM
  * @version beta
  */
 public @Getter @Setter @ToString class CrudVo {
-	//private map
+	private String parentIssueKey;
+	private String[] developers;
+	private String[] qas;
 }

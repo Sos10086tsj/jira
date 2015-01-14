@@ -1,20 +1,22 @@
 package com.chinesedreamer.jira.biz;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.jira.core.BasicCredentials;
+import com.chinesedreamer.jira.core.Field;
 import com.chinesedreamer.jira.core.Issue;
 import com.chinesedreamer.jira.core.IssueType;
 import com.chinesedreamer.jira.core.JiraClient;
 import com.chinesedreamer.jira.core.JiraException;
 import com.chinesedreamer.jira.core.Project;
 import com.chinesedreamer.jira.core.Version;
+import com.chinesedreamer.jira.curd.vo.CrudVo;
 import com.chinesedreamer.jira.reader.PropertiesReader;
-import com.chinesedreamer.jira.user.dto.JiraUser;
 
 /**
  * Description:
@@ -55,8 +57,61 @@ public class JiraServiceImpl implements JiraService {
 	}
 
 	@Override
-	public Map<String, String> loadProjectRoles(String projectKey)
-			throws JiraException {
-		return this.getJiraClient().getProject(projectKey).getRoles();
+	public List<Issue> createIssues(String project, String issueType, String version, List<CrudVo> vos) throws JiraException {
+		List<Issue> newIssues = new ArrayList<Issue>();
+
+		List<String> versions = new ArrayList< String>();
+		versions.add(version);
+		
+		for (CrudVo vo : vos) {
+			//1. get parent issue
+			Issue parentIssue = this.getJiraClient().getIssue(vo.getParentIssueKey());
+			//2. create develop task
+			if (null != vo.getDevelopers() && vo.getDevelopers().length != 0) {
+				for (String dev : vo.getDevelopers()) {
+					Issue newIssue = this.getJiraClient().createIssue(project, issueType)
+							.field(Field.SUMMARY, "【开发任务】" + parentIssue.getSummary())
+							.field(Field.PRIORITY, Field.valueById("3"))
+							.field(Field.ASSIGNEE, dev)
+							.field(Field.FIX_VERSIONS, versions)
+							.execute();
+					parentIssue.link(newIssue.getKey(), "包含");
+					newIssues.add(newIssue);
+				}
+			}
+			//3. create qa task
+			if (null != vo.getQas() && vo.getQas().length != 0) {
+				for (String qa : vo.getQas()) {
+					Issue newIssue = this.getJiraClient().createIssue(project, issueType)
+							.field(Field.SUMMARY, "【测试任务】" + parentIssue.getSummary())
+							.field(Field.PRIORITY, Field.valueById("3"))
+							.field(Field.ASSIGNEE, qa)
+							.field(Field.FIX_VERSIONS, versions)
+							.execute();
+					parentIssue.link(newIssue.getKey(), "包含");
+					newIssues.add(newIssue);
+				}
+			}
+		}
+
+		return newIssues;
 	}
+
+	@Override
+	public List<Issue> showIssues(String[] issueKeys) throws JiraException {
+		List<Issue> issues = new ArrayList<Issue>();
+		for (String key : issueKeys) {
+			if (StringUtils.isNotEmpty(key)) {
+				Issue issue = this.getJiraClient().getIssue(key);
+				issues.add(issue);
+			}
+		}
+		return issues;
+	}
+
+	/*
+	@Override
+	public Map<String, String> loadProjectRoles(String projectKey) throws JiraException {
+		return this.getJiraClient().getProject(projectKey).getRoles();
+	}*/
 }
