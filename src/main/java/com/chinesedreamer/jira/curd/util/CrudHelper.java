@@ -36,7 +36,7 @@ public class CrudHelper {
 	
 	public static List<CrudVo> getCrudVos(HttpServletRequest request){
 		List<CrudVo> vos = new ArrayList<CrudVo>();
-		String requestVos = request.getParameter("curdVos");
+		String requestVos = request.getParameter("crudVos");
 		JSONObject rootJsonObject = JSONObject.parseObject(requestVos);
 		JSONArray rootJsonArray = rootJsonObject.getJSONArray("crudVos");
 		for (Object issueVo : rootJsonArray) {

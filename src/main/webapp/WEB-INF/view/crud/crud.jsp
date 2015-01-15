@@ -22,7 +22,15 @@
 		<div >
 			<select id="project_select" name="project_select">
 				<c:forEach items="${projects}" var="project">
-					<option value="${project.key}">${project.name}</option>
+					<c:choose>
+						<%-- 默认gaphone --%>
+						<c:when test="${project.key == 'GAPHONE'}">
+							<option value="${project.key}" selected="selected">${project.name}</option>
+						</c:when>
+						<c:otherwise>
+							<option value="${project.key}" >${project.name}</option>
+						</c:otherwise>
+					</c:choose>
 				</c:forEach>
 			</select>
 		</div>
@@ -34,7 +42,15 @@
 		<div>
 			<select id="issue_type_select" name="issue_type_select">
 				<c:forEach items="${issueTypes}" var="issueType">
-					<option value="${issueType.name}">${issueType.name}</option>
+					<c:choose>
+						<%--默认任务 --%>
+						<c:when test="${issueType.name == '任务'}">
+							<option value="${issueType.name}" selected="selected">${issueType.name}</option>
+						</c:when>
+						<c:otherwise>
+							<option value="${issueType.name}">${issueType.name}</option>
+						</c:otherwise>
+					</c:choose>
 				</c:forEach>
 			</select>
 		</div>
@@ -65,8 +81,6 @@
 		<button id="create_btn">提交</button>
 	</div>
 <div class="clear"></div>
-
-
 
 </body>
 </html>

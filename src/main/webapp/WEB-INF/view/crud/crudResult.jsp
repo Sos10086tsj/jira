@@ -5,33 +5,23 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../../resources/plugins/jquery/jquery-2.1.1.js"></script>
+
+<link rel="stylesheet" type="text/css"  href="../../resources/css/common.css">  
+<link rel="stylesheet" type="text/css"  href="../../resources/plugins/jpGrid/css/ui.jqgrid.css">  
+<script type="text/javascript" src="../../resources/plugins/jpGrid/js/minified/jquery.jqGrid.min.js"></script>  
+<script type="text/javascript" src="../../resources/plugins/jpGrid/js/i18n/grid.locale-cn.js"></script>  
+<script type="text/javascript" src="../../resources/js/crudResultHelper.js"></script>
 <title>Jira任务创建结果</title>
 </head>
 <body>
-	<div>
-		<table>
-			<thead>
-				<tr>
-					<th>创建结果</th>
-				</tr>
-				<tr>
-					<th>Key</th>
-					<th>Summary</th>
-					<th>Assignee</th>
-					<th>Fix Version</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${issues }" var = "issue">
-					<tr>
-						<td>${issue.key}</td>
-						<td>${issue.summary}</td>
-						<td>${issue.assignee}</td>
-						<td>${issue.fixVersion}</td>
-					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
+	
+	<div >
+		<table id="jira_result_table" ></table> 
 	</div>
 </body>
+
+<script>
+	var data = '${issues}';
+</script>
 </html>

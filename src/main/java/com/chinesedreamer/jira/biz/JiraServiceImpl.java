@@ -1,7 +1,9 @@
 package com.chinesedreamer.jira.biz;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +31,14 @@ import com.chinesedreamer.jira.reader.PropertiesReader;
 public class JiraServiceImpl implements JiraService {
 	private JiraClient jiraClient;
 	
+	private final static Map<String, String> devMap = new HashMap<String, String>();
+	static{
+		devMap.put("yanghui", "【开发任务】");
+		devMap.put("laiting", "【开发任务】");
+		devMap.put("xiexp", "【android】");
+		devMap.put("fanyn", "【ios】");
+		devMap.put("taosj", "【开发任务】");
+	}
 
 	private JiraClient getJiraClient() {
 		if (null == this.jiraClient) {
@@ -70,7 +80,7 @@ public class JiraServiceImpl implements JiraService {
 			if (null != vo.getDevelopers() && vo.getDevelopers().length != 0) {
 				for (String dev : vo.getDevelopers()) {
 					Issue newIssue = this.getJiraClient().createIssue(project, issueType)
-							.field(Field.SUMMARY, "【开发任务】" + parentIssue.getSummary())
+							.field(Field.SUMMARY, devMap.get(dev) + parentIssue.getSummary())
 							.field(Field.PRIORITY, Field.valueById("3"))
 							.field(Field.ASSIGNEE, dev)
 							.field(Field.FIX_VERSIONS, versions)
@@ -102,7 +112,7 @@ public class JiraServiceImpl implements JiraService {
 		List<Issue> issues = new ArrayList<Issue>();
 		for (String key : issueKeys) {
 			if (StringUtils.isNotEmpty(key)) {
-				Issue issue = this.getJiraClient().getIssue(key);
+				Issue issue = this.getJiraClient().getIssue(key.trim());
 				issues.add(issue);
 			}
 		}
