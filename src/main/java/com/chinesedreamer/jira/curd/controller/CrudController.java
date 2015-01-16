@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,7 +39,7 @@ public class CrudController {
 	public String loadCrud(Model model) throws JiraException {
 		List<Project> projects = this.jiraService.loadProjects();
 		List<IssueType> issueTypes = this.jiraService.loadIssueTypes();
-		List<Version> versions = this.jiraService.loadProjectVersions("GAPHONE");
+		List<Version> versions = this.jiraService.loadProjectVersions("GAPHONE");//default gaphone
 		model.addAttribute("projects", projects);
 		model.addAttribute("issueTypes", issueTypes);
 		model.addAttribute("versions", versions);
@@ -70,5 +71,11 @@ public class CrudController {
 		return "crud/crudResult";
 	}
 	
-	
+	@ResponseBody
+	@RequestMapping(value = "getProjectVersions", method = RequestMethod.POST)
+	public List<Version> getProjectVersions(Model model, HttpServletRequest request) throws JiraException{
+		String project = request.getParameter("project").trim();
+		List<Version> versions = this.jiraService.loadProjectVersions(project);
+		return versions;
+	}
 }

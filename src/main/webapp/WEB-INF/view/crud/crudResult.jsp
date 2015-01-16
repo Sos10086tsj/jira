@@ -17,7 +17,7 @@
 <body>
 	
 	<div >
-		<table id="jira_result_table" ></table> 
+		<table id="jira_result_table" border="1" style="border-collapse: collapse;"></table> 
 	</div>
 </body>
 

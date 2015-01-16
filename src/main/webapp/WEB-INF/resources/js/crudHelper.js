@@ -11,67 +11,6 @@ crudHelper = {
 };
 
 $(function() {
-//	/*提交创建请求*/
-//	$("#create_btn").off("click").on("click",function (){
-//		var project = $("#project_select").val();
-//		var issueType = $("#issue_type_select").val();
-//		var version = $("#version_select").val();
-//
-//		var issues = new Array();
-//		
-//		//loop
-//		var parentIssue = $("#jira_key").val();
-//		var developers = new Array();
-//		if ( $("#task_type_dev").is( ":checked" ) ){
-//			$("input[name='developer']").each(function(){
-//				var developer = {
-//						username : $(this).val()
-//				};
-//				developers.push(developer);
-//			});
-//		}
-//		var qas = new Array();
-//		if ( $("#task_type_test").is( ":checked" ) ){
-//			$("input[name='qa']").each(function(){
-//				var qa = {
-//						username : $(this).val()
-//				};
-//				qas.push(qa);
-//			});
-//		}
-//		
-//		var issue = {
-//				issueKey : parentIssue,
-//				developers : developers,
-//				qas : qas
-//		};
-//		issues.push(issue);
-//		
-//		var curdVos = {
-//				crudVos : issues
-//		};
-//		
-//		$.ajax({
-//			url : '/jiraCrud/createJiraTasks',
-//			type : 'post',
-//			async : false,
-//			data : {
-//				project : project,
-//				issueType : issueType,
-//				version : version,
-//				curdVos : JSON.stringify(curdVos)
-//			},
-//			success : function(result){
-//				//alert("success!");
-//				window.location.href = "/jiraCrud/showCreateResult?issueKeys=" + result;
-//			},
-//			failure : function(){
-//				alert("failure!");
-//			}
-//		});
-//	});
-	
-	
 	
 	//jqGrid
 	$("#jira_table").jqGrid({
@@ -271,7 +210,7 @@ $(function() {
 			$.ajax({
 				url : '/jiraCrud/createJiraTasks',
 				type : 'post',
-				async : false,
+				async : true,
 				data : {
 					project : project,
 					issueType : issueType,
@@ -286,5 +225,31 @@ $(function() {
 				}
 			});
 		}
+	});
+	
+	//项目select选中事件
+	$("#project_select").change(function(){
+		$.ajax({
+			url : '/jiraCrud/getProjectVersions',
+			type : 'post',
+			async : true,
+			data : {
+				project : $("#project_select").find("option:selected").val()
+			},
+			success : function(result){				
+				var comp = $("#version_select");
+				comp.empty();
+				var dataList = eval(result);
+				if(dataList){
+					for(i in dataList){
+						var record = dataList[i];
+						comp.append("<option value='" + record.name + "'>" + record.name + "</option>");
+					}
+				}
+			},
+			failure : function(){
+				alert("获取列表失败！");
+			}
+		});
 	});
 });
