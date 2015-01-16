@@ -34,6 +34,10 @@ public class CrudHelper {
 		return request.getParameter("issueKeys");
 	}
 	
+	public static String getTemplateCode(HttpServletRequest request){
+		return request.getParameter("templateCode");
+	}
+	
 	public static List<CrudVo> getCrudVos(HttpServletRequest request){
 		List<CrudVo> vos = new ArrayList<CrudVo>();
 		String requestVos = request.getParameter("crudVos");
@@ -44,21 +48,46 @@ public class CrudHelper {
 			CrudVo vo = new CrudVo();
 			vo.setParentIssueKey(jo.getString("issueKey"));
 			
+			//develop array
 			JSONArray devJsonArray = jo.getJSONArray("developers");
-			String[] developers = new String[devJsonArray.size()];
-			for (int i = 0; i < devJsonArray.size(); i++) {
-				JSONObject devJo = (JSONObject)devJsonArray.get(i);
-				developers[i] = devJo.getString("username");
+			if (null != devJsonArray && devJsonArray.size() > 0) {
+				String[] developers = new String[devJsonArray.size()];
+				for (int i = 0; i < devJsonArray.size(); i++) {
+					JSONObject devJo = (JSONObject)devJsonArray.get(i);
+					developers[i] = devJo.getString("username");
+				}
+				vo.setDevelopers(developers);
 			}
-			vo.setDevelopers(developers);
-			
+			//qa array
 			JSONArray qaJsonArray = jo.getJSONArray("qas");
-			String[] qas = new String[qaJsonArray.size()];
-			for (int i = 0; i < qaJsonArray.size(); i++) {
-				JSONObject qaJo = (JSONObject)qaJsonArray.get(i);
-				qas[i] = qaJo.getString("username");
+			if (null != qaJsonArray && qaJsonArray.size() > 0) {
+				String[] qas = new String[qaJsonArray.size()];
+				for (int i = 0; i < qaJsonArray.size(); i++) {
+					JSONObject qaJo = (JSONObject)qaJsonArray.get(i);
+					qas[i] = qaJo.getString("username");
+				}
+				vo.setQas(qas);
 			}
-			vo.setQas(qas);
+			//requirement array
+			JSONArray reqJsonArray = jo.getJSONArray("requirements");
+			if (null != reqJsonArray && reqJsonArray.size() > 0) {
+				String[] requirements = new String[reqJsonArray.size()];
+				for (int i = 0; i < reqJsonArray.size(); i++) {
+					JSONObject reqJo = (JSONObject)reqJsonArray.get(i);
+					requirements[i] = reqJo.getString("username");
+				}
+				vo.setRequirements(requirements);
+			}
+			//products array
+			JSONArray productJsonArray = jo.getJSONArray("requirements");
+			if (null != productJsonArray && productJsonArray.size() > 0) {
+				String[] products = new String[productJsonArray.size()];
+				for (int i = 0; i < productJsonArray.size(); i++) {
+					JSONObject productJo = (JSONObject)productJsonArray.get(i);
+					products[i] = productJo.getString("username");
+				}
+				vo.setProducts(products);
+			}
 			
 			vos.add(vo);
 		}

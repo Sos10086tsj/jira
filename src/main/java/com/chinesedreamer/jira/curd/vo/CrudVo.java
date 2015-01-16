@@ -14,4 +14,6 @@ public @Getter @Setter @ToString class CrudVo {
 	private String parentIssueKey;
 	private String[] developers;
 	private String[] qas;
+	private String[] requirements;
+	private String[] products;
 }

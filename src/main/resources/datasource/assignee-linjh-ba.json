@@ -1,0 +1,24 @@
+{
+    "assignee": {
+        "ba": [
+            {
+                "name": "陶世杰",
+                "username": "taosj"
+            },
+            {
+                "name": "林将会",
+                "username": "linjh"
+            }
+        ],
+        "product": [
+            {
+                "name": "周程程",
+                "username": "zhoucc"
+            },
+            {
+                "name": "程妮",
+                "username": "chenni"
+            }
+        ]
+    }
+}

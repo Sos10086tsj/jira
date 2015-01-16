@@ -1,4 +1,4 @@
-package com.chinesedreamer.jira.biz;
+package com.chinesedreamer.jira.biz.service;
 
 import java.util.List;
 
@@ -21,6 +21,6 @@ public interface JiraService {
 	public List<Version> loadProjectVersions(String projectKey) throws JiraException;
 	//public Map<String, String> loadProjectRoles(String projectKey) throws JiraException;
 	
-	public List<Issue> createIssues(String project, String issueType, String version, List<CrudVo> vos) throws JiraException;
+	public List<Issue> createIssues(String project, String issueType, String version, List<CrudVo> vos, String templateCode) throws JiraException;
 	public List<Issue> showIssues(String[] issueKeys) throws JiraException;
 }

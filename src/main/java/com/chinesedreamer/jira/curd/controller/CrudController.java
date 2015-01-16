@@ -7,13 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
-import com.chinesedreamer.jira.biz.JiraService;
+import com.chinesedreamer.jira.biz.jsonvo.TemplateCode;
+import com.chinesedreamer.jira.biz.service.JiraService;
 import com.chinesedreamer.jira.core.Issue;
 import com.chinesedreamer.jira.core.IssueType;
 import com.chinesedreamer.jira.core.JiraException;
@@ -43,6 +43,9 @@ public class CrudController {
 		model.addAttribute("projects", projects);
 		model.addAttribute("issueTypes", issueTypes);
 		model.addAttribute("versions", versions);
+		//templateCode
+		List<TemplateCode> templateCodes = TemplateCode.loadDataSource();
+		model.addAttribute("templateCodes", templateCodes);
 		return "crud/crud";
 	}
 	
@@ -53,7 +56,8 @@ public class CrudController {
 		String issueType = CrudHelper.getIssueType(request);
 		String version = CrudHelper.getVersion(request);
 		List<CrudVo> vos = CrudHelper.getCrudVos(request);
-		List<Issue> issues = this.jiraService.createIssues(project, issueType, version, vos);
+		String templateCode = CrudHelper.getTemplateCode(request);
+		List<Issue> issues = this.jiraService.createIssues(project, issueType, version, vos,templateCode);
 		StringBuffer buffer = new StringBuffer();
 		for (Issue issue : issues) {
 			buffer.append(issue.getKey())

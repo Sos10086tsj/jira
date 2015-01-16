@@ -16,7 +16,7 @@ public class JsonReaderTest {
 
 	@Test
 	public void testReadJsonFile() {
-		String path = "datasource/jira-users.json";
+		String path = "datasource/assignee-linjh-requirement.json";
 		JSONObject object = JsonReader.readJsonFile(path);
 		assertNotNull(object);
 		System.out.println(object);

@@ -1,0 +1,44 @@
+{
+    "assignee": {
+        "developer": [
+            {
+                "name": "陶世杰",
+                "username": "taosj"
+            },
+            {
+                "name": "赖婷",
+                "username": "laiting"
+            },
+            {
+                "name": "杨辉",
+                "username": "yanghui"
+            },
+            {
+                "name": "樊亚宁",
+                "username": "fanyn"
+            },
+            {
+                "name": "谢修普",
+                "username": "xiexp"
+            }
+        ],
+        "qa": [
+            {
+                "name": "王光源",
+                "username": "wanggy"
+            },
+            {
+                "name": "王武定",
+                "username": "wangwd"
+            },
+            {
+                "name": "秦美玲",
+                "username": "qinml"
+            },
+            {
+                "name": "周豪奇",
+                "username": "zhouhq"
+            }
+        ]
+    }
+}

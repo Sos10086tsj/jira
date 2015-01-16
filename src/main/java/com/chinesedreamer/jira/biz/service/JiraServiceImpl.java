@@ -1,4 +1,4 @@
-package com.chinesedreamer.jira.biz;
+package com.chinesedreamer.jira.biz.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.jira.core.BasicCredentials;
-import com.chinesedreamer.jira.core.Field;
 import com.chinesedreamer.jira.core.Issue;
 import com.chinesedreamer.jira.core.IssueType;
 import com.chinesedreamer.jira.core.JiraClient;
@@ -67,44 +66,8 @@ public class JiraServiceImpl implements JiraService {
 	}
 
 	@Override
-	public List<Issue> createIssues(String project, String issueType, String version, List<CrudVo> vos) throws JiraException {
-		List<Issue> newIssues = new ArrayList<Issue>();
-
-		List<String> versions = new ArrayList< String>();
-		versions.add(version);
-		
-		for (CrudVo vo : vos) {
-			//1. get parent issue
-			Issue parentIssue = this.getJiraClient().getIssue(vo.getParentIssueKey());
-			//2. create develop task
-			if (null != vo.getDevelopers() && vo.getDevelopers().length != 0) {
-				for (String dev : vo.getDevelopers()) {
-					Issue newIssue = this.getJiraClient().createIssue(project, issueType)
-							.field(Field.SUMMARY, devMap.get(dev) + parentIssue.getSummary())
-							.field(Field.PRIORITY, Field.valueById("3"))
-							.field(Field.ASSIGNEE, dev)
-							.field(Field.FIX_VERSIONS, versions)
-							.execute();
-					parentIssue.link(newIssue.getKey(), "包含");
-					newIssues.add(newIssue);
-				}
-			}
-			//3. create qa task
-			if (null != vo.getQas() && vo.getQas().length != 0) {
-				for (String qa : vo.getQas()) {
-					Issue newIssue = this.getJiraClient().createIssue(project, issueType)
-							.field(Field.SUMMARY, "【测试任务】" + parentIssue.getSummary())
-							.field(Field.PRIORITY, Field.valueById("3"))
-							.field(Field.ASSIGNEE, qa)
-							.field(Field.FIX_VERSIONS, versions)
-							.execute();
-					parentIssue.link(newIssue.getKey(), "包含");
-					newIssues.add(newIssue);
-				}
-			}
-		}
-
-		return newIssues;
+	public List<Issue> createIssues(String project, String issueType, String version, List<CrudVo> vos, String templateCode) throws JiraException {
+		return JiraTemplateFactory.generateCreator(templateCode, this.getJiraClient()).createIssues(project, issueType, version, vos);
 	}
 
 	@Override
@@ -118,10 +81,4 @@ public class JiraServiceImpl implements JiraService {
 		}
 		return issues;
 	}
-
-	/*
-	@Override
-	public Map<String, String> loadProjectRoles(String projectKey) throws JiraException {
-		return this.getJiraClient().getProject(projectKey).getRoles();
-	}*/
 }
