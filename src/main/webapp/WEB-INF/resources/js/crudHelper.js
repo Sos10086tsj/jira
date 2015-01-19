@@ -11,124 +11,10 @@ crudHelper = {
 };
 
 $(function() {
+	//加载默认jsp
+	var selectedValue = $("#template_select").find("option:selected").val();
+	$("#load_grid").load("/jiraCrud/loadGridJsp?templateCode=" + selectedValue);
 	
-	//jqGrid
-	$("#jira_table").jqGrid({
-		datatype: "local",
-		height: 500,
-		weight: 900,
-		colNames: ['Jira#','Developers', 'Qas'],
-		colModel : [
-								{
-									name : 'issueKey',
-									index : 'issueKey',
-									width : 100,
-									editable : true,
-									edittype : 'text'
-								},
-								{
-									name : 'developers',
-									index : 'developers',
-									width : 400,
-									editable : true,
-									edittype : 'custom',
-									editoptions : {
-										custom_element : function(value,
-												options) {
-											var comp = "<div id=\""
-													+ options.id
-													+ "\" style=\"white-space:normal;\" >"
-													+ "<input type=\"checkbox\" name=\"user\" value=\"yanghui\"/>杨辉"
-													+ "<input type=\"checkbox\" name=\"user\" value=\"laiting\" />赖婷" 
-													+ "<input type=\"checkbox\" name=\"user\" value=\"fanyn\" />樊亚宁" 
-													+ "<input type=\"checkbox\" name=\"user\" value=\"xiexp\" />谢修普" 
-													+ "<input type=\"checkbox\" name=\"user\" value=\"taosj\" />陶世杰" 
-													+ "</div>";
-											return comp;
-										},
-										custom_value : function(elem,
-												operation, value) {
-											if (operation === 'get') {
-												var id = elem.attr("id");
-												var qas = "";
-												$("#" + id + " input").each(function() {
-													if($(this).is(":checked")){
-														qas = qas + $(this).val()+ ",";
-													}
-												});
-												qas = crudHelper.formatSliptStr(qas,",");
-												elem.val(qas);
-												return elem.val();
-											} else if (operation === 'set') {
-												var id = elem.attr("id");
-												var qas = "";
-												$("#" + id + " input").each(function() {
-													if($(this).is(":checked")){
-														qas = qas + $(this).val()+ ",";
-													}
-												});
-												qas = crudHelper.formatSliptStr(qas,",");
-												elem.val(qas);
-											}
-
-										}
-									}
-								},
-								{
-									name : 'qas',
-									index : 'qas',
-									width : 400,
-									editable : true,
-									edittype : 'custom',
-									editoptions : {
-										custom_element : function(value,
-												options) {
-											var comp = "<div id=\""
-													+ options.id
-													+ "\" style=\"white-space:normal;\" >"
-													+ "<input type=\"checkbox\" name=\"user\" value=\"wanggy\"/>王光源"
-													+ "<input type=\"checkbox\" name=\"user\" value=\"zhouhq\" />周豪奇</div>";
-											return comp;
-										},
-										custom_value : function(elem,
-												operation, value) {
-											if (operation === 'get') {
-												var id = elem.attr("id");
-												var qas = "";
-												$("#" + id + " input").each(function() {
-													if($(this).is(":checked")){
-														qas = qas + $(this).val()+ ",";
-													}
-												});
-												elem.val(qas);
-												qas = crudHelper.formatSliptStr(qas,",");
-												return elem.val();
-											} else if (operation === 'set') {
-												var id = elem.attr("id");
-												var qas = "";
-												$("#" + id + " input").each(function() {
-													if($(this).is(":checked")){
-														qas = qas + $(this).val()+ ",";
-													}
-												});
-												qas = crudHelper.formatSliptStr(qas,",");
-												elem.val(qas);
-											}
-
-										}
-									}
-								}
-		           ],
-		multiselect: true,
-		caption: "创建Jira任务",
-		ondblClickRow: function(id){
-			$('#jira_table').jqGrid('editRow', id, {
-				keys : true,
-				url : 'clientArray',
-				restoreAfterError : true
-			});
-		}
-	});
 	
 	//添加按钮
 	$("#add_btn").off("click").on("click", function (){
@@ -251,5 +137,11 @@ $(function() {
 				alert("获取列表失败！");
 			}
 		});
+	});
+	
+	//template select 选中事件
+	$("#template_select").change(function(){
+		var selectedValue = $("#template_select").find("option:selected").val();
+		$("#load_grid").load("/jiraCrud/loadGridJsp?templateCode=" + selectedValue);
 	});
 });

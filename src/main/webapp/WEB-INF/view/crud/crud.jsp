@@ -1,16 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script type="text/javascript" src="../../resources/plugins/jquery/jquery-2.1.1.js"></script>
+<script type="text/javascript"
+	src="../../resources/plugins/jquery/jquery-2.1.1.js"></script>
 
-<link rel="stylesheet" type="text/css"  href="../../resources/css/common.css">  
-<link rel="stylesheet" type="text/css"  href="../../resources/plugins/jpGrid/css/ui.jqgrid.css">  
-<script type="text/javascript" src="../../resources/plugins/jpGrid/js/minified/jquery.jqGrid.min.js"></script>  
-<script type="text/javascript" src="../../resources/plugins/jpGrid/js/i18n/grid.locale-cn.js"></script>  
+
 <script type="text/javascript" src="../../resources/js/crudHelper.js"></script>
 <title>CRUD页面</title>
 </head>
@@ -18,8 +16,8 @@
 
 	<!-- 选择项目 -->
 	<div class="float_left">
-		<div >项目</div>
-		<div >
+		<div>项目</div>
+		<div>
 			<select id="project_select" name="project_select">
 				<c:forEach items="${projects}" var="project">
 					<c:choose>
@@ -28,7 +26,7 @@
 							<option value="${project.key}" selected="selected">${project.name}</option>
 						</c:when>
 						<c:otherwise>
-							<option value="${project.key}" >${project.name}</option>
+							<option value="${project.key}">${project.name}</option>
 						</c:otherwise>
 					</c:choose>
 				</c:forEach>
@@ -67,20 +65,30 @@
 			</select>
 		</div>
 	</div>
-
-<div class="clear"></div>
-
+	
+	<!-- template -->
 	<div class="float_left">
-		<table id="jira_table" cellspacing="0" cellpadding="0" border="0"></table> 
+		<div>模板</div>
+		<div>
+			<select id="template_select" name="template_select">
+				<c:forEach items="${templateCodes}" var="templateCode">
+					<option value="${templateCode.name}">${templateCode.name}</option>
+				</c:forEach>
+			</select>
+		</div>
 	</div>
-<div class="clear"></div>
+
+	<div class="clear"></div>
+	
+	<div id="load_grid"></div>
+	
 	<!-- 提交按钮 -->
 	<div class="float_left">
 		<button id="add_btn">添加</button>
 		<button id="del_btn">删除</button>
 		<button id="create_btn">提交</button>
 	</div>
-<div class="clear"></div>
+	<div class="clear"></div>
 
 </body>
 </html>

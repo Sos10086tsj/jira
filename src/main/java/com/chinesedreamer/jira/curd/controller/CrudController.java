@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.chinesedreamer.jira.biz.jsonvo.Assignee;
 import com.chinesedreamer.jira.biz.jsonvo.TemplateCode;
 import com.chinesedreamer.jira.biz.service.JiraService;
 import com.chinesedreamer.jira.core.Issue;
@@ -81,5 +82,12 @@ public class CrudController {
 		String project = request.getParameter("project").trim();
 		List<Version> versions = this.jiraService.loadProjectVersions(project);
 		return versions;
+	}
+	
+	@RequestMapping(value = "loadGridJsp", method = RequestMethod.GET)
+	public String loadGridJsp(Model model, HttpServletRequest request){
+		String templateCode = request.getParameter("templateCode").trim();
+		model.addAttribute("assignees", JSON.toJSONString(Assignee.loadDataSource(templateCode)));
+		return "crud/crudGrid-" + templateCode;
 	}
 }
