@@ -11,6 +11,18 @@
 
 <script type="text/javascript" src="../../resources/js/reportHelper.js"></script>
 <title>报表查询</title>
+
+<style>  
+    table { border:0;border-collapse:collapse;}  
+    td { font:normal 12px/17px Arial;padding:2px;width:100px;}  
+    th { font:bold 12px/17px Arial;text-align:left;padding:4px;border-bottom:1px solid #333;width:100px;}  
+    .parent { background:#FFF38F;cursor:pointer;}  /* 偶数行样式*/  
+    .odd { background:#FFFFEE;} /* 奇数行样式*/  
+    .selected { background:#FF6500;color:#fff;}  
+</style>  
+
+
+
 </head>
 <body>
 	
@@ -46,5 +58,10 @@
 		</div>
 	</div>
 	
+	<div>
+		<button id="rpt_btn">生成报表</button>
+	</div>
+	
+	<div id="report"></div>
 </body>
 </html>

@@ -41,4 +41,12 @@ public class ReportController {
 		List<Sprint> sprints = this.jiraReportService.loadRapidViewSprints(rapidViewId);
 		return sprints;
 	}
+	
+	@RequestMapping(value = "generateSprintReport", method = RequestMethod.GET)
+	public String generateSprintReport(Model model, HttpServletRequest request) throws JiraException{
+		int rapidViewId = Integer.parseInt(request.getParameter("rapidViewId"));
+		int sprintId = Integer.parseInt(request.getParameter("sprintId"));
+		model.addAttribute("vos",this.jiraReportService.generateDailyReport(rapidViewId, sprintId, ""));
+		return "report/report";
+	}
 }

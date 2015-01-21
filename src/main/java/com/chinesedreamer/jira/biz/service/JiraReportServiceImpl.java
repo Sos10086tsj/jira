@@ -105,11 +105,13 @@ public class JiraReportServiceImpl implements JiraReportService{
 		}
 	}
 	
-	private void getLinkTaskd(Issue issue, ReportTaskVo vo, boolean inward){
+	private void getLinkTaskd(Issue issue, ReportTaskVo vo, boolean inward) throws JiraException{
 		for (IssueLink is : issue.getIssueLinks()) {
 			Issue linkIssue = inward ? is.getInwardIssue() : is.getOutwardIssue();
 			ReportTaskVo linkVo = new ReportTaskVo();
 			if (null != linkIssue) {
+				String key = linkIssue.getKey();
+				linkIssue = this.jiraClient.getIssue(key);
 				linkVo.setKey(linkIssue.getKey());
 				linkVo.setSummary(linkIssue.getSummary());
 				linkVo.setIssueType( (null == linkIssue.getIssueType() ? "" : linkIssue.getIssueType().getName()) );
