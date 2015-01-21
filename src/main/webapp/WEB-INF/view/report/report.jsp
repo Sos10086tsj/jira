@@ -29,7 +29,7 @@
         		</tr>
         		<c:forEach items = "${vo.subTasks}" var = "subTask" varStatus="subi">
         			<tr class="child_row_${i.index}">
-        				<td>子任务${subTask.key }</td>
+        				<td>${subTask.key }</td>
         				<td>${subTask.summary }</td>
         				<td>${subTask.status }</td>
         				<td>${subTask.issueType }</td>
@@ -39,7 +39,7 @@
         		</c:forEach>
         		<c:forEach items = "${vo.includedTasks}" var = "includeTask" varStatus="includei">
         			<tr class="child_row_${i.index}">
-        				<td>包含${includeTask.key }</td>
+        				<td>${includeTask.key }</td>
         				<td>${includeTask.summary }</td>
         				<td>${includeTask.status }</td>
         				<td>${includeTask.issueType }</td>
