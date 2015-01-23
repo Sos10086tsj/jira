@@ -21,6 +21,12 @@ public @Getter @Setter @ToString class ReportTaskVo {
 	private String status;
 	private String assignee;
 	private String issueType;
+	private int timeSpent;
+	private String timeSpentStr;
+	private int timeEstimated;
+	private String timeEstimatedStr;
+	private Date resolutionDate;
+	private boolean deliveryOnTime = false;
 	private List<ReportTaskVo> subTasks;
 	private List<ReportTaskVo> includedTasks;
 	

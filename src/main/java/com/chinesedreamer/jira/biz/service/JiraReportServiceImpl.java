@@ -1,10 +1,12 @@
 package com.chinesedreamer.jira.biz.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.chinesedreamer.jira.biz.vo.ReportTaskVo;
 import com.chinesedreamer.jira.core.BasicCredentials;
@@ -29,6 +31,8 @@ import com.chinesedreamer.jira.reader.PropertiesReader;
 public class JiraReportServiceImpl implements JiraReportService{
 	private JiraClient jiraClient;
 	private GreenHopperClient gh;
+	
+	private List<String> keys = new ArrayList<String>();
 	
 	private GreenHopperClient getGreenHopperClient() {
 		if (null == this.gh) {
@@ -71,33 +75,32 @@ public class JiraReportServiceImpl implements JiraReportService{
 		
 		SprintReport sp = board.getSprintReport(sprint);
 		for (SprintIssue si : sp.getPuntedIssues()) {
-			Issue issue = si.getJiraIssue();
-
-			ReportTaskVo vo = new ReportTaskVo();
-			vo.setKey(issue.getKey());
-			vo.setSummary(issue.getSummary());
-			vo.setIssueType(issue.getIssueType().getName());
-			vo.setStatus(issue.getStatus().getName());
-			vo.setAssignee(issue.getAssignee().getDisplayName());
-			vo.setDueDate(issue.getDueDate());
-			this.getSubTasks(issue, vo);
-			this.getLinkTaskd(issue, vo, false);
-			//TODO not included in sotry/tasks
-			vos.add(vo);
+			vos.add(this.generateReportTaskVo(si.getJiraIssue()));
 		}
 		
+		List<SprintIssue> allIssues = new ArrayList<SprintIssue>();
+		allIssues.addAll(sp.getCompletedIssues());
+		allIssues.addAll(sp.getIncompletedIssues());
+		for (SprintIssue si : allIssues) {
+			if (!keys.contains(si.getKey())) {
+				vos.add(this.generateReportTaskVo(si.getJiraIssue()));
+			}
+		}
+		
+		this.calculateParentTask(vos);
 		return vos;
+	}
+	
+	private ReportTaskVo generateReportTaskVo(Issue issue) throws JiraException{
+		ReportTaskVo vo = this.generateIssueVo(issue);
+		this.getSubTasks(issue, vo);
+		this.getLinkTaskd(issue, vo, false);
+		return vo;
 	}
 	
 	private void getSubTasks(Issue issue, ReportTaskVo vo){
 		for (Issue subIssue : issue.getSubtasks()) {
-			ReportTaskVo subVo = new ReportTaskVo();
-			subVo.setKey(subIssue.getKey());
-			subVo.setSummary(subIssue.getSummary());
-			subVo.setIssueType( (null == subIssue.getIssueType() ? "" : subIssue.getIssueType().getName()) );
-			subVo.setStatus(subIssue.getStatus().getName());
-			subVo.setAssignee( (null == subIssue.getAssignee() ? "" : subIssue.getAssignee().getDisplayName()) );
-			subVo.setDueDate(subIssue.getDueDate());
+			ReportTaskVo subVo = this.generateIssueVo(subIssue);
 			if (null != subIssue.getSubtasks() && !subIssue.getSubtasks().isEmpty()) {
 				getSubTasks(subIssue, subVo);
 			}
@@ -108,23 +111,111 @@ public class JiraReportServiceImpl implements JiraReportService{
 	private void getLinkTaskd(Issue issue, ReportTaskVo vo, boolean inward) throws JiraException{
 		for (IssueLink is : issue.getIssueLinks()) {
 			Issue linkIssue = inward ? is.getInwardIssue() : is.getOutwardIssue();
-			ReportTaskVo linkVo = new ReportTaskVo();
 			if (null != linkIssue) {
 				String key = linkIssue.getKey();
 				linkIssue = this.jiraClient.getIssue(key);
-				linkVo.setKey(linkIssue.getKey());
-				linkVo.setSummary(linkIssue.getSummary());
-				linkVo.setIssueType( (null == linkIssue.getIssueType() ? "" : linkIssue.getIssueType().getName()) );
-				linkVo.setStatus(linkIssue.getStatus().getName());
-				linkVo.setAssignee( (null == linkIssue.getAssignee() ? "" : linkIssue.getAssignee().getDisplayName()));
-				linkVo.setDueDate(linkIssue.getDueDate());
+				ReportTaskVo linkVo = this.generateIssueVo(linkIssue);
 				getLinkTaskd(linkIssue, linkVo, inward);
 				vo.getIncludedTasks().add(linkVo);
 			}
 		}
 	}
 
-	
+	private ReportTaskVo generateIssueVo(Issue issue){
+		ReportTaskVo vo = new ReportTaskVo();
+		vo.setKey(issue.getKey());
+		keys.add(issue.getKey());
+		vo.setSummary(StringUtils.isEmpty(issue.getSummary()) ? "" : issue.getSummary());
+		vo.setIssueType( (null == issue.getIssueType() ? "" :  issue.getIssueType().getName()) );
+		vo.setStatus( (null == issue.getStatus() ? "" : issue.getStatus().getName()) );
+		vo.setAssignee( (null == issue.getAssignee() ? "" : issue.getAssignee().getDisplayName()) );
+		vo.setDueDate(issue.getDueDate());
+		vo.setResolutionDate(issue.getResolutionDate());
+		int timeEstimated = (null == issue.getTimeTracking() ? (null == issue
+				.getTimeEstimate() ? 0 : issue.getTimeEstimate()) : issue
+				.getTimeTracking().getOriginalEstimateSeconds());
+		vo.setTimeEstimated(timeEstimated);
+		vo.setTimeEstimatedStr(this.formatTimeTracking(timeEstimated));
+		int timeSpent = (null == issue.getTimeTracking() ? (null == issue
+				.getTimeSpent() ? 0 : issue.getTimeSpent()) : issue
+				.getTimeTracking().getTimeSpentSeconds());
+		vo.setTimeSpent(timeSpent);
+		vo.setTimeSpentStr(this.formatTimeTracking(timeSpent));
+		if (issue.getDueDate() != null && issue.getResolutionDate() != null && (issue.getResolutionDate().getTime() - issue.getDueDate().getTime() < 3600) ) {
+			vo.setDeliveryOnTime(true);
+		}
+		return vo;
+	}
 
+	private String formatTimeTracking(int time){
+		StringBuffer buffer = new StringBuffer();
+		int minutes = time / 60;
+		int hours = minutes / 60;
+		int days = hours / 24;
+		if (days > 0) {
+			buffer.append(days + "天");
+		}
+		if (hours > 0 && hours % 24 != 0) {
+			buffer.append( (hours - 24 * days) + "小时");
+		}
+		if (minutes > 0 && minutes % 60 != 0) {
+			buffer.append( (minutes - hours * 60) + "分");
+		}
+		if(buffer.length() == 0) {
+			buffer.append("0");
+		}
+		return buffer.toString();
+	}
 	
+	private void calculateParentTask(List<ReportTaskVo> vos){
+		for (ReportTaskVo vo : vos) {
+			int timeEstimated = vo.getTimeEstimated();
+			int timeSpent = vo.getTimeSpent();
+			int totalSubTimeEstimated = 0;
+			int totalSubTimeSpent = 0;
+			int totalLinkTimeEstimated = 0;
+			int totalLinkTimeSpent = 0;
+			Date dueDate = vo.getDueDate();
+			Date resolutionDate = vo.getDueDate();
+			for (ReportTaskVo subVo : vo.getSubTasks()) {
+				totalSubTimeEstimated += subVo.getTimeEstimated();
+				totalSubTimeSpent += subVo.getTimeSpent();
+				dueDate = (subVo.getDueDate() == null ? dueDate
+						: (dueDate == null ? subVo.getDueDate() : dueDate
+								.before(subVo.getDueDate()) ? subVo
+								.getDueDate() : dueDate));
+				resolutionDate = (subVo.getResolutionDate() == null ? resolutionDate
+						: (resolutionDate == null ? subVo.getResolutionDate()
+								: resolutionDate.before(subVo
+										.getResolutionDate()) ? subVo
+										.getResolutionDate() : resolutionDate));
+			}
+			for (ReportTaskVo linkVo : vo.getIncludedTasks()) {
+				totalLinkTimeEstimated += linkVo.getTimeEstimated();
+				totalLinkTimeSpent += linkVo.getTimeSpent();
+				dueDate = (linkVo.getDueDate() == null ? dueDate
+						: (dueDate == null ? linkVo.getDueDate() : dueDate
+								.before(linkVo.getDueDate()) ? linkVo
+								.getDueDate() : dueDate));
+				resolutionDate = (linkVo.getResolutionDate() == null ? resolutionDate
+						: (resolutionDate == null ? linkVo.getResolutionDate()
+								: resolutionDate.before(linkVo
+										.getResolutionDate()) ? linkVo
+										.getResolutionDate() : resolutionDate));
+			}
+			if (totalLinkTimeEstimated != 0 || totalSubTimeEstimated != 0) {
+				timeEstimated = totalLinkTimeEstimated + totalSubTimeEstimated;
+			}
+			if (totalSubTimeSpent != 0 || totalLinkTimeSpent != 0) {
+				timeSpent = totalSubTimeSpent + totalLinkTimeSpent;
+			}
+
+			vo.setTimeEstimated(timeEstimated);
+			vo.setTimeEstimatedStr(this.formatTimeTracking(timeEstimated));
+			vo.setTimeSpent(timeSpent);
+			vo.setTimeSpentStr(this.formatTimeTracking(timeSpent));
+			vo.setDueDate(dueDate);
+			vo.setResolutionDate(resolutionDate);
+		}
+	}
 }

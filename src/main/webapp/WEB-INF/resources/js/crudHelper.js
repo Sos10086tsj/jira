@@ -51,6 +51,7 @@ $(function() {
 			var project = $("#project_select").val();
 			var issueType = $("#issue_type_select").val();
 			var version = $("#version_select").val();
+			var templateCode = $("#template_select").val();
 			
 			var vos = new Array();
 			
@@ -101,7 +102,8 @@ $(function() {
 					project : project,
 					issueType : issueType,
 					version : version,
-					crudVos : JSON.stringify(crudVos)
+					crudVos : JSON.stringify(crudVos),
+					templateCode : templateCode
 				},
 				success : function(result){
 					window.location.href = "/jiraCrud/showCreateResult?issueKeys= " + crudHelper.formatSliptStr(result,",");
