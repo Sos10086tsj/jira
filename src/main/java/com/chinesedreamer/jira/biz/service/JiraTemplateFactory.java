@@ -13,7 +13,7 @@ public class JiraTemplateFactory {
 	public static JiraCreatorService generateCreator(String templateCode, JiraClient jiraClient){
 		if (templateCode.equals("yanghui-gaphone")) {
 			return new JiraCreatorServiceYanghui(jiraClient);
-		}else if (templateCode.equals("linjh-requirement")) {
+		}else if (templateCode.equals("linjh-ba")) {
 			return new JiraCreatorServiceLinjh(jiraClient);
 		}
 		return null;

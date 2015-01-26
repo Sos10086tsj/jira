@@ -69,7 +69,7 @@ public class CrudHelper {
 				vo.setQas(qas);
 			}
 			//requirement array
-			JSONArray reqJsonArray = jo.getJSONArray("requirements");
+			JSONArray reqJsonArray = jo.getJSONArray("bas");
 			if (null != reqJsonArray && reqJsonArray.size() > 0) {
 				String[] requirements = new String[reqJsonArray.size()];
 				for (int i = 0; i < reqJsonArray.size(); i++) {
@@ -79,7 +79,7 @@ public class CrudHelper {
 				vo.setRequirements(requirements);
 			}
 			//products array
-			JSONArray productJsonArray = jo.getJSONArray("requirements");
+			JSONArray productJsonArray = jo.getJSONArray("products");
 			if (null != productJsonArray && productJsonArray.size() > 0) {
 				String[] products = new String[productJsonArray.size()];
 				for (int i = 0; i < productJsonArray.size(); i++) {

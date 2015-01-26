@@ -19,7 +19,7 @@
 <body>
 
 	<div class="float_left">
-		<table id="jira_table" cellspacing="0" cellpadding="0" border="0"></table>
+		<table id="jira_table_linjh" cellspacing="0" cellpadding="0" border="0"></table>
 	</div>
 	<div class="clear"></div>
 
