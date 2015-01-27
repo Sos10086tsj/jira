@@ -30,7 +30,7 @@ public class ReportController {
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String showReportBoard(Model model) throws JiraException{
 		model.addAttribute("rapidViews", this.jiraReportService.loadRapidViews());
-		model.addAttribute("sprints", this.jiraReportService.loadRapidViewSprints(24));//default gaphone-taosj
+		model.addAttribute("sprints", this.jiraReportService.loadRapidViewSprints(23));//default gaphone-taosj
 		return "report/reportBoard";
 	}
 	

@@ -14,7 +14,7 @@ import lombok.ToString;
  * @date Jan 20, 201511:15:13 AM
  * @version beta
  */
-public @Getter @Setter @ToString class ReportTaskVo {
+public @Getter @Setter @ToString class ReportTaskVo{
 	private String key;
 	private String summary;
 	private Date dueDate;
@@ -43,4 +43,5 @@ public @Getter @Setter @ToString class ReportTaskVo {
 		}
 		return this.includedTasks;
 	}
+
 }

@@ -1,14 +1,18 @@
 package com.chinesedreamer.jira.biz.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.chinesedreamer.jira.biz.vo.ReportTaskVo;
+import com.chinesedreamer.jira.biz.vo.ReportTaskVoComparator;
 import com.chinesedreamer.jira.core.BasicCredentials;
 import com.chinesedreamer.jira.core.Issue;
 import com.chinesedreamer.jira.core.IssueLink;
@@ -32,7 +36,8 @@ public class JiraReportServiceImpl implements JiraReportService{
 	private JiraClient jiraClient;
 	private GreenHopperClient gh;
 	
-	private List<String> keys = new ArrayList<String>();
+	private List<String> keys ;
+	private List<String> duplicateKeys ;
 	
 	private GreenHopperClient getGreenHopperClient() {
 		if (null == this.gh) {
@@ -64,6 +69,8 @@ public class JiraReportServiceImpl implements JiraReportService{
 		List<ReportTaskVo> vos = new ArrayList<ReportTaskVo>();
 		
 		Sprint sprint = null;
+		keys = new ArrayList<String>();
+		duplicateKeys = new ArrayList<String>();
 
 		RapidView board = this.getGreenHopperClient().getRapidView(rapidViewId);
 		for (Sprint s : board.getSprints()) {
@@ -74,27 +81,44 @@ public class JiraReportServiceImpl implements JiraReportService{
 		}
 		
 		SprintReport sp = board.getSprintReport(sprint);
-		for (SprintIssue si : sp.getPuntedIssues()) {
-			vos.add(this.generateReportTaskVo(si.getJiraIssue()));
-		}
-		
+		//Punted Issues貌似只会获取最大level的issue
+//		for (SprintIssue si : sp.getPuntedIssues()) {
+//			vos.add(this.generateReportTaskVo(si.getJiraIssue()));
+//		}
 		List<SprintIssue> allIssues = new ArrayList<SprintIssue>();
 		allIssues.addAll(sp.getCompletedIssues());
 		allIssues.addAll(sp.getIncompletedIssues());
 		for (SprintIssue si : allIssues) {
 			if (!keys.contains(si.getKey())) {
-				vos.add(this.generateReportTaskVo(si.getJiraIssue()));
+				ReportTaskVo vo = this.generateReportTaskVo(si.getJiraIssue());
+				if (null != vo) {
+					vos.add(vo);
+				}
 			}
 		}
 		
+		Set<ReportTaskVo> removeVos = new HashSet<ReportTaskVo>();
+		for (String key : duplicateKeys) {
+			for (ReportTaskVo vo : vos) {
+				if (vo.getKey().equals(key)) {
+					removeVos.add(vo);
+				}
+			}
+		}
+		vos.removeAll(removeVos);
+		
 		this.calculateParentTask(vos);
+		
+		this.sortReportVos(vos);
 		return vos;
 	}
 	
 	private ReportTaskVo generateReportTaskVo(Issue issue) throws JiraException{
 		ReportTaskVo vo = this.generateIssueVo(issue);
-		this.getSubTasks(issue, vo);
-		this.getLinkTaskd(issue, vo, false);
+		if (null != vo) {
+			this.getSubTasks(issue, vo);
+			this.getLinkTaskd(issue, vo, false);
+		}
 		return vo;
 	}
 	
@@ -122,9 +146,18 @@ public class JiraReportServiceImpl implements JiraReportService{
 	}
 
 	private ReportTaskVo generateIssueVo(Issue issue){
+		if (issue.getIssueType().getName().equals("新功能")) {//过滤新功能
+			return null;
+		}
+		
 		ReportTaskVo vo = new ReportTaskVo();
 		vo.setKey(issue.getKey());
-		keys.add(issue.getKey());
+		if (!keys.contains(issue.getKey())) {
+			keys.add(issue.getKey());
+		}else {
+			duplicateKeys.add(issue.getKey());
+		}
+		
 		vo.setSummary(StringUtils.isEmpty(issue.getSummary()) ? "" : issue.getSummary());
 		vo.setIssueType( (null == issue.getIssueType() ? "" :  issue.getIssueType().getName()) );
 		vo.setStatus( (null == issue.getStatus() ? "" : issue.getStatus().getName()) );
@@ -217,5 +250,9 @@ public class JiraReportServiceImpl implements JiraReportService{
 			vo.setDueDate(dueDate);
 			vo.setResolutionDate(resolutionDate);
 		}
+	}
+	
+	private void sortReportVos(List<ReportTaskVo> vos){
+		Collections.sort(vos, new ReportTaskVoComparator());
 	}
 }
