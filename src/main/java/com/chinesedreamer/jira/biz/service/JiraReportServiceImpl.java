@@ -183,7 +183,7 @@ public class JiraReportServiceImpl implements JiraReportService{
 	}
 	
 	private boolean isOnTime(Issue issue){
-		return issue.getDueDate() != null && issue.getResolutionDate() != null && (issue.getResolutionDate().getTime() - issue.getDueDate().getTime() < 3600);
+		return (issue.getDueDate() != null && issue.getResolutionDate() != null && (issue.getResolutionDate().getTime() - issue.getDueDate().getTime() < 3600)) || (issue.getDueDate() == null && issue.getResolutionDate() == null);
 	}
 	
 	private int getTimeSpent(Issue issue){
@@ -348,7 +348,7 @@ public class JiraReportServiceImpl implements JiraReportService{
 		List<String> keys = new ArrayList<String>();
 		for (SprintIssue si : allIssues) {
 			Issue issue = si.getJiraIssue();
-			if (null != issue.getAssignee()) {
+			if (null != issue.getAssignee() && !issue.getIssueType().getName().equals("Story") && !issue.getIssueType().getName().equals("新功能") ) {
 				ReportTaskAssigneeVo vo = this.generateIssueAssigneeVo(si.getJiraIssue());
 				if (null != vo) {
 					if (!keys.contains(vo.getUsername())) {
