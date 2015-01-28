@@ -3,14 +3,18 @@ package com.chinesedreamer.jira.biz.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.chinesedreamer.jira.biz.vo.ReportTaskAssigneeVo;
+import com.chinesedreamer.jira.biz.vo.ReportTaskSummaryVo;
 import com.chinesedreamer.jira.biz.vo.ReportTaskVo;
 import com.chinesedreamer.jira.biz.vo.ReportTaskVoComparator;
 import com.chinesedreamer.jira.core.BasicCredentials;
@@ -38,6 +42,10 @@ public class JiraReportServiceImpl implements JiraReportService{
 	
 	private List<String> keys ;
 	private List<String> duplicateKeys ;
+	private int taskNum ;
+	private int bugNum ;
+	private int subTaskNum ;
+	private int tecNum ;
 	
 	private GreenHopperClient getGreenHopperClient() {
 		if (null == this.gh) {
@@ -164,20 +172,30 @@ public class JiraReportServiceImpl implements JiraReportService{
 		vo.setAssignee( (null == issue.getAssignee() ? "" : issue.getAssignee().getDisplayName()) );
 		vo.setDueDate(issue.getDueDate());
 		vo.setResolutionDate(issue.getResolutionDate());
-		int timeEstimated = (null == issue.getTimeTracking() ? (null == issue
-				.getTimeEstimate() ? 0 : issue.getTimeEstimate()) : issue
-				.getTimeTracking().getOriginalEstimateSeconds());
+		int timeEstimated = (this.getTimeEstimated(issue));
 		vo.setTimeEstimated(timeEstimated);
 		vo.setTimeEstimatedStr(this.formatTimeTracking(timeEstimated));
-		int timeSpent = (null == issue.getTimeTracking() ? (null == issue
-				.getTimeSpent() ? 0 : issue.getTimeSpent()) : issue
-				.getTimeTracking().getTimeSpentSeconds());
+		int timeSpent = (this.getTimeSpent(issue));
 		vo.setTimeSpent(timeSpent);
 		vo.setTimeSpentStr(this.formatTimeTracking(timeSpent));
-		if (issue.getDueDate() != null && issue.getResolutionDate() != null && (issue.getResolutionDate().getTime() - issue.getDueDate().getTime() < 3600) ) {
-			vo.setDeliveryOnTime(true);
-		}
+		vo.setDeliveryOnTime(this.isOnTime(issue));
 		return vo;
+	}
+	
+	private boolean isOnTime(Issue issue){
+		return issue.getDueDate() != null && issue.getResolutionDate() != null && (issue.getResolutionDate().getTime() - issue.getDueDate().getTime() < 3600);
+	}
+	
+	private int getTimeSpent(Issue issue){
+		return null == issue.getTimeTracking() ? (null == issue
+				.getTimeSpent() ? 0 : issue.getTimeSpent()) : issue
+				.getTimeTracking().getTimeSpentSeconds();
+	}
+	
+	private int getTimeEstimated(Issue issue){
+		return null == issue.getTimeTracking() ? (null == issue
+				.getTimeEstimate() ? 0 : issue.getTimeEstimate()) : issue
+				.getTimeTracking().getOriginalEstimateSeconds();
 	}
 
 	private String formatTimeTracking(int time){
@@ -254,5 +272,118 @@ public class JiraReportServiceImpl implements JiraReportService{
 	
 	private void sortReportVos(List<ReportTaskVo> vos){
 		Collections.sort(vos, new ReportTaskVoComparator());
+	}
+
+	@Override
+	public ReportTaskSummaryVo analyzeSprit(List<ReportTaskVo> reportTaskVos,
+			String templateCode) {
+		ReportTaskSummaryVo reportTaskSummaryVo = new ReportTaskSummaryVo();
+		taskNum = 0;
+		bugNum = 0;
+		subTaskNum = 0;
+		tecNum = 0;
+		for (ReportTaskVo vo : reportTaskVos) {
+			this.analyzeTask(vo, reportTaskSummaryVo);
+			for (ReportTaskVo subVo : vo.getSubTasks()) {
+				this.analyzeTask(subVo, reportTaskSummaryVo);
+			}
+			for (ReportTaskVo includedVo : vo.getIncludedTasks()) {
+				this.analyzeTask(includedVo, reportTaskSummaryVo);
+			}
+		}
+		reportTaskSummaryVo.setCompletedRate( 1.00 * reportTaskSummaryVo.getCompletedTasks() / reportTaskSummaryVo.getTotalTasks());
+		reportTaskSummaryVo.setWorkingRate( 1.00 * reportTaskSummaryVo.getWorkingMinutes() / reportTaskSummaryVo.getTotalMinutes() );
+		reportTaskSummaryVo.setWorkingMinutesStr( this.formatTimeTracking(reportTaskSummaryVo.getWorkingMinutes()) );
+		reportTaskSummaryVo.setTotalMinutesStr( this.formatTimeTracking(reportTaskSummaryVo.getTotalMinutes()) );
+		reportTaskSummaryVo.setOnTimeRate( 1.00 * reportTaskSummaryVo.getOnTime() / reportTaskSummaryVo.getTotalTasks() );
+		reportTaskSummaryVo.setBugRate( 1.00 * bugNum / (taskNum + subTaskNum + tecNum) );
+		Map<String, Integer> constitution = new HashMap<String, Integer>();
+		constitution.put("task", taskNum);
+		constitution.put("bug", bugNum);
+		constitution.put("subTask", subTaskNum);
+		constitution.put("tec", tecNum);
+		reportTaskSummaryVo.setConstitution(constitution);
+		return reportTaskSummaryVo;
+	}
+	
+	private void analyzeTask(ReportTaskVo vo,ReportTaskSummaryVo reportTaskSummaryVo){
+		reportTaskSummaryVo.addTotalTasks();
+		if (vo.getStatus().equals("已关闭")) {
+			reportTaskSummaryVo.addCompletedTasks();
+		}
+		if (vo.isDeliveryOnTime()) {
+			reportTaskSummaryVo.addOnTime();
+		}
+		reportTaskSummaryVo.addWorkingMinutes(vo.getTimeSpent());
+		reportTaskSummaryVo.addTotalMinutes(vo.getTimeEstimated());
+		if (vo.getIssueType().equals("任务")) {
+			taskNum += 1;
+		}else if (vo.getIssueType().equals("子任务")) {
+			subTaskNum += 1;
+		}else if (vo.getIssueType().equals("Technical task")) {
+			tecNum += 1;
+		}else if (vo.getIssueType().equals("Bug")) {
+			bugNum += 1;
+		}
+	}
+
+	@Override
+	public List<ReportTaskAssigneeVo> generateAssigneeReport(int rapidViewId,
+			int sprintId, String templateCode) throws JiraException {
+		List<ReportTaskAssigneeVo> vos = new ArrayList<ReportTaskAssigneeVo>();
+		
+		Sprint sprint = null;
+		RapidView board = this.getGreenHopperClient().getRapidView(rapidViewId);
+		for (Sprint s : board.getSprints()) {
+			if (s.getId() == sprintId) {
+				sprint = s;
+				break;
+			}
+		}
+		SprintReport sp = board.getSprintReport(sprint);
+		List<SprintIssue> allIssues = new ArrayList<SprintIssue>();
+		allIssues.addAll(sp.getCompletedIssues());
+		allIssues.addAll(sp.getIncompletedIssues());
+		
+		List<String> keys = new ArrayList<String>();
+		for (SprintIssue si : allIssues) {
+			Issue issue = si.getJiraIssue();
+			if (null != issue.getAssignee()) {
+				ReportTaskAssigneeVo vo = this.generateIssueAssigneeVo(si.getJiraIssue());
+				if (null != vo) {
+					if (!keys.contains(vo.getUsername())) {
+						keys.add(vo.getUsername());
+						vos.add(vo);
+					}else {
+						int index = keys.indexOf(vo.getUsername());
+						vos.get(index).merge(vo);
+					}
+				}
+			}
+		}
+		for (ReportTaskAssigneeVo vo : vos) {
+			int tasks = vo.getTotal() - vo.getBugs();
+			vo.setBugRate( (0 == tasks) ? 0.00 : 1.00 * vo.getBugs() / tasks );
+			vo.setOnTimeRate( 1.00 * vo.getOnTime() / vo.getTotal() );
+			vo.setTimeRate( (0 == vo.getTotalEstimated()) ? 0 : 1.00 * vo.getTotalTimeSpent() / vo.getTotalEstimated() );
+			vo.setTotalTimeSpentStr( this.formatTimeTracking(vo.getTotalTimeSpent()) );
+			vo.setTotalEstimatedStr( this.formatTimeTracking(vo.getTotalEstimated()) );
+		}
+		return vos;
+	}
+	
+	private ReportTaskAssigneeVo generateIssueAssigneeVo(Issue issue){
+		ReportTaskAssigneeVo vo = new ReportTaskAssigneeVo();
+		vo.setTotal(1);
+		vo.setUsername(issue.getAssignee().getDisplayName());
+		if (issue.getIssueType().getName().equals("Bug")) {
+			vo.setBugs(1);
+		}
+		if (this.isOnTime(issue)) {
+			vo.setOnTime(1);
+		}
+		vo.setTotalTimeSpent(this.getTimeSpent(issue));
+		vo.setTotalEstimated(this.getTimeEstimated(issue));
+		return vo;
 	}
 }

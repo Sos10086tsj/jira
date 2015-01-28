@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.chinesedreamer.jira.biz.service.JiraReportService;
+import com.chinesedreamer.jira.biz.vo.ReportTaskVo;
 import com.chinesedreamer.jira.core.JiraException;
 import com.chinesedreamer.jira.core.greenhopper.Sprint;
 
@@ -46,7 +47,17 @@ public class ReportController {
 	public String generateSprintReport(Model model, HttpServletRequest request) throws JiraException{
 		int rapidViewId = Integer.parseInt(request.getParameter("rapidViewId"));
 		int sprintId = Integer.parseInt(request.getParameter("sprintId"));
-		model.addAttribute("vos",this.jiraReportService.generateDailyReport(rapidViewId, sprintId, ""));
-		return "report/report";
+		List<ReportTaskVo> vos = this.jiraReportService.generateDailyReport(rapidViewId, sprintId, "");
+		model.addAttribute("vos",vos);
+		model.addAttribute("total", this.jiraReportService.analyzeSprit(vos, ""));
+		return "report/sprintReport";
+	}
+	
+	@RequestMapping(value = "generateAssigneeReport", method = RequestMethod.GET)
+	public String generateAssigneeReport(Model model, HttpServletRequest request) throws JiraException{
+		int rapidViewId = Integer.parseInt(request.getParameter("rapidViewId"));
+		int sprintId = Integer.parseInt(request.getParameter("sprintId"));
+		model.addAttribute("vos", this.jiraReportService.generateAssigneeReport(rapidViewId, sprintId, ""));
+		return "report/assigneeReport";
 	}
 }

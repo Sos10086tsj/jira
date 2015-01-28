@@ -79,7 +79,51 @@
         			</tr>
         		</c:forEach>
 			</c:forEach>
+			
+			<%-- 统计 --%>
+			<tr class="total-font">
+				<td colspan="4" rowspan="4" >总任务数</td>
+				<td rowspan="4" >${total.totalTasks}</td>
+			</tr>
+			<tr class="total-font">
+				<td colspan="4" >完成率</td>
+				<td><fmt:formatNumber type="percent" value="${total.completedRate}" /></td>
+			</tr>
+			<tr class="total-font">
+				<td colspan="4" >交付率</td>
+				<td><fmt:formatNumber type="percent" value="${total.onTimeRate}" /></td>
+			</tr>
+			<tr class="total-font">
+				<td colspan="4" >bug率</td>
+				<td><fmt:formatNumber type="percent" value="${total.bugRate}" /></td>
+			</tr>
+			<tr class="total-font">
+				<td colspan="3">总耗时</td>
+				<td>${total.workingMinutesStr}</td>
+				<td colspan="3">预计耗时</td>
+				<td>${total.totalMinutesStr}</td>
+				<td>耗时比</td>
+				<td><fmt:formatNumber type="percent" value="${total.workingRate}" /></td>
+			</tr>
+			<tr class="total-font">
+				<td colspan="5" rowspan="5">任务组成</td>
+			</tr>
+			<tr class="total-font">
+				<td colspan="4" >任务</td>
+				<td>${total.constitution.task}</td>
+			</tr>
+			<tr class="total-font">
+				<td colspan="4" >子任务</td>
+				<td>${total.constitution.subTask}</td>
+			</tr>
+			<tr class="total-font">
+				<td colspan="4" >Technical task</td>
+				<td>${total.constitution.tec}</td>
+			</tr>
+			<tr class="total-font">
+				<td colspan="4" >Bug</td>
+				<td>${total.constitution.bug}</td>
+			</tr>
         </tbody>  
     </table>  
-	
 </div>

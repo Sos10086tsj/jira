@@ -10,31 +10,22 @@
 
 
 <script type="text/javascript" src="../../resources/js/reportHelper.js"></script>
+<link rel="stylesheet" type="text/css"  href="../../resources/css/report.css">  
+<link rel="stylesheet" type="text/css"  href="../../resources/css/common.css">  
 <title>报表查询</title>
-
-<style>  
-    table { border:0;border-collapse:collapse;}  
-    td { font:normal 12px/17px Arial;padding:2px;width:100px;}  
-    th { font:bold 12px/17px Arial;text-align:left;padding:4px;border-bottom:1px solid #333;width:100px;}  
-    .parent { background:#FFF38F;cursor:pointer;}  /* 偶数行样式*/  
-    .odd { background:#FFFFEE;} /* 奇数行样式*/  
-    .selected { background:#FF6500;color:#fff;}  
-</style>  
-
-
 
 </head>
 <body>
 	
 	<!-- 过滤器 -->
-	<div>
+	<div class="float_left">
 		<div>过滤器</div>
 		<div>
 			<select id="rapid_view_select">
 				<c:forEach items="${rapidViews}" var="rapidView">
 					<c:choose>
 						<%-- 默认gaphone --%>
-						<c:when test="${rapidView.name == 'gaphone-taosj'}">
+						<c:when test="${rapidView.name == 'gaphone'}">
 							<option value="${rapidView.id}" selected="selected">${rapidView.name}</option>
 						</c:when>
 						<c:otherwise>
@@ -47,7 +38,7 @@
 	</div>
 	
 	<!-- sprint -->
-	<div>
+	<div class="float_left">
 		<div>Sprint</div>
 		<div>
 			<select id="sprint_select">
@@ -58,10 +49,16 @@
 		</div>
 	</div>
 	
-	<div>
-		<button id="rpt_btn">生成报表</button>
+	<div class="clear"></div>
+	<div class="float_left">
+		<button id="sprint_rpt_btn">Sprint报表</button>
 	</div>
 	
+	<div class="float_left">
+		<button id="assignee_rpt_btn">Assignee报表</button>
+	</div>
+	
+	<div class="clear"></div>
 	<div id="report"></div>
 </body>
 </html>

@@ -26,7 +26,7 @@ $(function() {
 	});
 	
 	//生成报告
-	$("#rpt_btn").off("click").on("click", function (){
+	$("#sprint_rpt_btn").off("click").on("click", function (){
 		var rapidViewId = $("#rapid_view_select").find("option:selected").val();
 		var sprintId = $("#sprint_select").find("option:selected").val();
 		$("#report").load("/report/generateSprintReport?rapidViewId=" + rapidViewId + "&sprintId=" + sprintId);
@@ -40,4 +40,11 @@ $(function() {
 //		$(this).toggleClass("selected").siblings('.sub_row_'+this.id).toggle();
 //		$(this).toggleClass("selected").siblings('.include_row_'+this.id).toggle();
 	}).click();  
+	
+	//生成个人报告
+	$("#assignee_rpt_btn").off("click").on("click", function (){
+		var rapidViewId = $("#rapid_view_select").find("option:selected").val();
+		var sprintId = $("#sprint_select").find("option:selected").val();
+		$("#report").load("/report/generateAssigneeReport?rapidViewId=" + rapidViewId + "&sprintId=" + sprintId);
+	});
 });
