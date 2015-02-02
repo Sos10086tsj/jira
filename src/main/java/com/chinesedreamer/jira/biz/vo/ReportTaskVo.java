@@ -30,6 +30,7 @@ public @Getter @Setter @ToString class ReportTaskVo{
 	private List<ReportTaskVo> subTasks;
 	private List<ReportTaskVo> includedTasks;
 	
+	
 	public List<ReportTaskVo> getSubTasks(){
 		if (null == this.subTasks) {
 			subTasks = new ArrayList<ReportTaskVo>();

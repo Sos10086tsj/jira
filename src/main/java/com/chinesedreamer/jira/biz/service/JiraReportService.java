@@ -40,4 +40,6 @@ public interface JiraReportService {
 	 * @throws JiraException
 	 */
 	public List<ReportTaskAssigneeVo> generateAssigneeReport(int rapidViewId, int sprintId, String templateCode) throws JiraException;
+	
+	public List<ReportTaskVo> generateStoryReport(int rapidViewId,int sprintId) throws JiraException;
 }

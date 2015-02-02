@@ -34,4 +34,12 @@ public class JiraReportServiceImplTest extends SpringTest{
 		}
 	}
 
+	@Test
+	public void testGenerateStoryReport(){
+		try {
+			this.jiraReportService.generateStoryReport(20, 40);
+		} catch (JiraException e) {
+			e.printStackTrace();
+		}
+	}
 }

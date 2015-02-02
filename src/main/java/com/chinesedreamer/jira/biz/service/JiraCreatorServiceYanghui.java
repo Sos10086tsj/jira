@@ -26,6 +26,7 @@ public class JiraCreatorServiceYanghui extends JiraCreatorService{
 		devMap.put("xiexp", "【android】");
 		devMap.put("fanyn", "【ios】");
 		devMap.put("taosj", "【开发任务】");
+		devMap.put("chenliang", "【开发任务】");
 	}
 
 	public JiraCreatorServiceYanghui(JiraClient jiraClient) {
