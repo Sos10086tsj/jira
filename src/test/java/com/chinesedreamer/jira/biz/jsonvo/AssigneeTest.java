@@ -14,7 +14,7 @@ public class AssigneeTest {
 
 	@Test
 	public void testLoadDataSource() {
-		Assignees assignees = Assignee.loadDataSource("linjh-ba");
+		AssigneesOld assignees = AssigneeOld.loadDataSource("linjh-ba");
 		assertNotNull(assignees);
 		System.out.println(assignees);
 	}

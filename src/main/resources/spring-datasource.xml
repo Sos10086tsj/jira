@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+          ">
+
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${druid_connection_url}" />
+		<property name="username" value="${druid_connection_username}" />
+		<property name="password" value="${druid_connection_password}" />
+		<property name="driverClassName" value="${druid_driverClassName}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="${druid_initialSize}" />
+		<property name="minIdle" value="${druid_minIdle}" />
+		<property name="maxActive" value="${druid_maxActive}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="${druid_maxWait}" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${druid_timeBetweenEvictionRunsMillis}" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="${druid_minEvictableIdleTimeMillis}" />
+		<property name="validationQuery" value="${druid_validationQuery}" />
+		<property name="testWhileIdle" value="${druid_testWhileIdle}" />
+		<property name="testOnBorrow" value="${druid_testOnBorrow}" />
+		<property name="testOnReturn" value="${druid_testOnReturn}" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 如果用Oracle，则把poolPreparedStatements配置为true，mysql可以配置为false。 -->
+		<property name="poolPreparedStatements" value="${druid_poolPreparedStatements}" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="${druid_maxPoolPreparedStatementPerConnectionSize}" />
+		<!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="${druid_filters}" />
+	</bean>
+	
+</beans>

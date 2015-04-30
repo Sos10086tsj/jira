@@ -1,6 +1,6 @@
 package com.chinesedreamer.jira.biz.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 import org.junit.Test;
 
 import com.chinesedreamer.jira.base.SpringTest;
-import com.chinesedreamer.jira.biz.vo.ReportTaskVo;
+import com.chinesedreamer.jira.biz.vo.ReportTaskOldVo;
 import com.chinesedreamer.jira.core.JiraException;
 
 /**
@@ -20,13 +20,13 @@ import com.chinesedreamer.jira.core.JiraException;
  */
 public class JiraReportServiceImplTest extends SpringTest{
 	@Resource
-	private JiraReportService jiraReportService;
+	private JiraReportOldService jiraReportService;
 	@Test
 	public void testGenerateDailyReport() {
 		try {
-			List<ReportTaskVo> vos = this.jiraReportService.generateDailyReport(1,2, "");
+			List<ReportTaskOldVo> vos = this.jiraReportService.generateDailyReport(1,2, "");
 			assertNotNull(vos);
-			for (ReportTaskVo reportTaskVo : vos) {
+			for (ReportTaskOldVo reportTaskVo : vos) {
 				System.out.println(reportTaskVo);
 			}
 		} catch (JiraException e) {
@@ -34,12 +34,5 @@ public class JiraReportServiceImplTest extends SpringTest{
 		}
 	}
 
-	@Test
-	public void testGenerateStoryReport(){
-		try {
-			this.jiraReportService.generateStoryReport(20, 40);
-		} catch (JiraException e) {
-			e.printStackTrace();
-		}
-	}
+	
 }

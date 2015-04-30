@@ -37,7 +37,7 @@ $(function() {
 
         $(this).toggleClass("selected")   // 添加/删除高亮  
         .siblings('.child_'+this.id).toggle();  // 隐藏/显示所谓的子行  
-//		$(this).toggleClass("selected").siblings('.sub_row_'+this.id).toggle();
+//		$(this).toggleClass("selected").siblings('.child_row_'+this.id).toggle();
 //		$(this).toggleClass("selected").siblings('.include_row_'+this.id).toggle();
 	}).click();  
 	
@@ -46,5 +46,9 @@ $(function() {
 		var rapidViewId = $("#rapid_view_select").find("option:selected").val();
 		var sprintId = $("#sprint_select").find("option:selected").val();
 		$("#report").load("/report/generateAssigneeReport?rapidViewId=" + rapidViewId + "&sprintId=" + sprintId);
+	});
+	
+	$("#daily_rpt_btn").off("click").on("click", function (){
+		$("#report").load("/report/generateDailyReport");
 	});
 });

@@ -17,6 +17,7 @@
           http://www.springframework.org/schema/task/spring-task-3.1.xsd  
           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd 
           ">
+    <context:property-placeholder location="classpath:config.properties"/>
       
     <context:component-scan base-package="com.chinesedreamer.jira.*">
 			<context:exclude-filter type="annotation"
@@ -41,4 +42,63 @@
         </property>
     </bean>
 	
+	<import resource="spring-datasource.xml"/>
+	
+	<!-- JPA EntityFactory -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="persistenceUnitName" value="com.chinesedreamer.jira"/>
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.ejb.HibernatePersistence"/>
+        </property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="generateDdl" value="${jpa_generateDdl}" />
+				<property name="database" value="${jpa_database}" />
+				<property name="databasePlatform" value="${jpa_databasePlatform}" />
+				<property name="showSql" value="${jpa_showSql}" />
+			</bean>
+		</property>
+		<property name="packagesToScan" value="com.chinesedreamer.jira.**.model" />
+		<property name="jpaDialect">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+		</property>
+		<property name="jpaPropertyMap">
+			<map>
+				<entry key="javax.persistence.validation.factory" value-ref="validator"/>
+			</map>
+		</property>
+	</bean>
+
+	<jpa:repositories base-package="com.chinesedreamer.jira.**.repository"
+		entity-manager-factory-ref="entityManagerFactory"
+		transaction-manager-ref="transactionManager">
+	</jpa:repositories>
+
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	
+	<!-- JPA transactionManager -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="batchSave*" propagation="REQUIRED"/>
+            <tx:method name="batchDelete*" propagation="REQUIRED"/>
+            <tx:method name="get*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="find*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="list*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="query*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="page*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+	<aop:config>
+        <aop:pointcut id="txPointcut" expression="execution(* com.chinesedreamer.jira..service..*.*(..))"/>
+        <aop:advisor id="txAdvisor" advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+    </aop:config>
 </beans>          

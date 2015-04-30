@@ -44,6 +44,7 @@
 		<fastjson.version>1.1.37</fastjson.version>
 		<commons.fileupload.version>1.2.1</commons.fileupload.version>
 		<ommons.io.version>2.4</ommons.io.version>
+		<spring.data.jpa.version>1.7.0.RELEASE</spring.data.jpa.version>
 	</properties>
 
 	<dependencies>
@@ -177,6 +178,46 @@
 			<version>3.1</version>
 		</dependency>
 
+		<!-- spring-data-jpa start -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring.data.jpa.version}</version>
+		</dependency>
+		<!-- spring-data-jpa end -->
+
+		<!-- hibernate start -->
+		<!-- <dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>javax.el-api</artifactId>
+		</dependency> -->
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<version>${hibernate.ehcache.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate.validator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.common</groupId>
+			<artifactId>hibernate-commons-annotations</artifactId>
+			<version>${hibernate.commons.annotaions.version}</version>
+		</dependency>
+		<!-- hibernate end -->
 	</dependencies>
 	<build>
 		<finalName>jira</finalName>

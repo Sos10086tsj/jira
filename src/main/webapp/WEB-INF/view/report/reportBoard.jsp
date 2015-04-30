@@ -58,6 +58,10 @@
 		<button id="assignee_rpt_btn">Assignee报表</button>
 	</div>
 	
+	<div class="float_left">
+		<button id="daily_rpt_btn">Daily报表</button>
+	</div>
+	
 	<div class="clear"></div>
 	<div id="report"></div>
 </body>

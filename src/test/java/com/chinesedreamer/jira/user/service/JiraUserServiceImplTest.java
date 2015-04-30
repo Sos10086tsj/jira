@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 import org.junit.Test;
 
 import com.chinesedreamer.jira.base.SpringTest;
-import com.chinesedreamer.jira.user.dto.JiraUser;
+import com.chinesedreamer.jira.user.dto.JiraUserOld;
 
 /**
  * Description: 
@@ -20,19 +20,19 @@ import com.chinesedreamer.jira.user.dto.JiraUser;
 public class JiraUserServiceImplTest extends SpringTest{
 
 	@Resource
-	private JiraUserService jiraUserService;
+	private JiraUserOldService jiraUserService;
 	@Test
 	public void testGetAllUsers() {
-		List<JiraUser> jiraUsers = this.jiraUserService.getAllUsers();
+		List<JiraUserOld> jiraUsers = this.jiraUserService.getAllUsers();
 		assertNotNull(jiraUsers);
-		for (JiraUser jiraUser : jiraUsers) {
+		for (JiraUserOld jiraUser : jiraUsers) {
 			System.out.println(jiraUser);
 		}
 	}
 
 	@Test
 	public void testGetUser() {
-		JiraUser jiraUser = this.jiraUserService.getUser("taosj");
+		JiraUserOld jiraUser = this.jiraUserService.getUser("taosj");
 		assertNotNull(jiraUser);
 		System.out.println(jiraUser);
 	}

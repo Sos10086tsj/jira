@@ -158,8 +158,14 @@ public class RestClient {
 
         if (sl.getStatusCode() >= 300)
             throw new RestException(sl.getReasonPhrase(), sl.getStatusCode(), result.toString());
-
-        return result.length() > 0 ? JSONSerializer.toJSON(result.toString()): null;
+        
+        //处理数组类型的结果
+        String resultStr = result.toString();
+        if (resultStr.length() > 0 && resultStr.startsWith("[")) {
+        	resultStr = "{data:" + resultStr + "}";
+		}
+        
+        return resultStr.length() > 0 ? JSONSerializer.toJSON(resultStr): null;
     }
 
     private JSON request(HttpEntityEnclosingRequestBase req, String payload)

@@ -24,6 +24,14 @@
             {
                 "name": "陈良",
                 "username": "chenliang"
+            },
+            {
+                "name": "杨卓力",
+                "username": "yangzl"
+            },
+            {
+                "name": "何勇波",
+                "username": "heyb"
             }
         ],
         "qa": [
@@ -41,7 +49,7 @@
             },
             {
                 "name": "周豪奇",
-                "username": "zhouhq"
+                "username": "zhouhaoqi"
             }
         ]
     }
