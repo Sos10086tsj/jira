@@ -1,10 +1,13 @@
 package com.chinesedreamer.jira.biz.core.priority.logic.impl;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.jira.base.logic.impl.BaseLogicImpl;
 import com.chinesedreamer.jira.biz.core.priority.logic.JiraPriorityLogic;
 import com.chinesedreamer.jira.biz.core.priority.model.JiraPriority;
+import com.chinesedreamer.jira.biz.core.priority.repository.JiraPriorityRepository;
 
 /**
  * Description: 
@@ -14,5 +17,11 @@ import com.chinesedreamer.jira.biz.core.priority.model.JiraPriority;
  */
 @Service
 public class JiraPriorityLogicImpl extends BaseLogicImpl<JiraPriority, Long> implements JiraPriorityLogic{
+	@Resource
+	private JiraPriorityRepository repository;
+	@Override
+	public JiraPriority findByJiraId(String jiraId) {
+		return this.repository.findByJiraId(jiraId);
+	}
 
 }

@@ -10,5 +10,5 @@ import com.chinesedreamer.jira.biz.core.priority.model.JiraPriority;
  * @version beta
  */
 public interface JiraPriorityLogic extends BaseLogic<JiraPriority, Long>{
-
+	public JiraPriority findByJiraId(String jiraId);
 }

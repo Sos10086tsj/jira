@@ -6,5 +6,5 @@ package com.chinesedreamer.jira.biz.sysconfig.constant;
  * @version beta
  */
 public class SysConfigConstant {
-	
+	public static String SYNC_PRIORITY_IDS = "";//priority同步的id列表
 }
