@@ -10,5 +10,5 @@ import com.chinesedreamer.jira.biz.core.user.model.JiraUser;
  * @version beta
  */
 public interface JiraUserRepository extends BaseRepository<JiraUser, Long>{
-
+	public JiraUser findByUsername(String username);
 }

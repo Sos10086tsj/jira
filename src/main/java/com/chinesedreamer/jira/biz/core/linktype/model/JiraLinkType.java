@@ -1,4 +1,4 @@
-package com.chinesedreamer.jira.biz.core.project.model;
+package com.chinesedreamer.jira.biz.core.linktype.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,25 +12,24 @@ import com.chinesedreamer.jira.base.model.JiraBaseEntity;
 /**
  * Description: 
  * @author Paris
- * @date Apr 30, 20152:09:49 PM
+ * @date Apr 30, 20153:16:10 PM
  * @version beta
  */
 @Entity
-@Table(name = "t_supp_jira_project")
-public @Getter @Setter class JiraProject extends JiraBaseEntity<Long>{
+@Table(name = "t_supp_jira_linktype")
+public @Getter @Setter class JiraLinkType extends JiraBaseEntity<Long>{
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4907561642805961961L;
-	
-	@Column
-	private String key;
-	
+	private static final long serialVersionUID = -5538461950625073403L;
+
 	@Column
 	private String name;
 	
 	@Column
-	private String description;
+	private Boolean inward;
 	
+	@Column
+	private Boolean outward;
 }
