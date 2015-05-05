@@ -16,8 +16,8 @@
 <body>
 	<div>
 		<div>
-			<input id="js_sync_user_username" placeholder="请输入需要同步的项目key"/>
-			<button onclick="syncHelper.syncUser()">同步</button>
+			<input id="js_sync_user_project" placeholder="请输入需要同步的用户名"/>
+			<button onclick="syncHelper.syncProject()">同步</button>
 		</div>
 		<div>
 			<a href="${pageContext.request.contextPath}/sync">返回</a>

@@ -60,4 +60,16 @@ public class SyncController {
 		this.jiraSyncService.syncUser(username);
 		logger.info("********** sync user info end, users:{}", username);
 	}
+	
+	@RequestMapping(value = "project", method = RequestMethod.GET)
+	public String showSyncProject(Model model){
+		return "/sync/syncProject";
+	}
+	@ResponseBody
+	@RequestMapping(value = "project", method = RequestMethod.POST)
+	public void  syncProject(Model model, String project) throws JiraException{
+		logger.info("********** sync project info begin, project:{}", project);
+		this.jiraSyncService.syncProject(project);
+		logger.info("********** sync project info end, project:{}", project);
+	}
 }
