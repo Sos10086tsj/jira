@@ -29,4 +29,10 @@ public interface JiraSyncService {
 	 * @throws JiraException
 	 */
 	public void syncPriority() throws JiraException;
+	
+	/**
+	 * 同步问题类型
+	 * @throws JiraException
+	 */
+	public void syncIssueType() throws JiraException;
 }

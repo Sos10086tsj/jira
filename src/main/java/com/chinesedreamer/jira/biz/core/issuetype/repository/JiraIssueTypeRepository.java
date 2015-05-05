@@ -10,5 +10,5 @@ import com.chinesedreamer.jira.biz.core.issuetype.model.JiraIssueType;
  * @version beta
  */
 public interface JiraIssueTypeRepository extends BaseRepository<JiraIssueType, Long>{
-
+	public JiraIssueType findByJiraId(String jiraId);
 }

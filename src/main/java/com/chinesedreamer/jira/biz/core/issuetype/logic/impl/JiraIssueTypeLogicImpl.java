@@ -1,10 +1,13 @@
 package com.chinesedreamer.jira.biz.core.issuetype.logic.impl;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.chinesedreamer.jira.base.logic.impl.BaseLogicImpl;
 import com.chinesedreamer.jira.biz.core.issuetype.logic.JiraIssueTypeLogic;
 import com.chinesedreamer.jira.biz.core.issuetype.model.JiraIssueType;
+import com.chinesedreamer.jira.biz.core.issuetype.repository.JiraIssueTypeRepository;
 
 /**
  * Description: 
@@ -14,5 +17,12 @@ import com.chinesedreamer.jira.biz.core.issuetype.model.JiraIssueType;
  */
 @Service
 public class JiraIssueTypeLogicImpl extends BaseLogicImpl<JiraIssueType, Long> implements JiraIssueTypeLogic{
+	@Resource
+	private JiraIssueTypeRepository repository;
+
+	@Override
+	public JiraIssueType findByJiraId(String jiraId) {
+		return this.repository.findByJiraId(jiraId);
+	}
 
 }

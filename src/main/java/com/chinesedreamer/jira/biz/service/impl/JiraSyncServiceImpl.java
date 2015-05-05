@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.chinesedreamer.jira.biz.core.issuetype.logic.JiraIssueTypeLogic;
+import com.chinesedreamer.jira.biz.core.issuetype.model.JiraIssueType;
 import com.chinesedreamer.jira.biz.core.priority.logic.JiraPriorityLogic;
 import com.chinesedreamer.jira.biz.core.priority.model.JiraPriority;
 import com.chinesedreamer.jira.biz.core.project.logic.JiraProjectLogic;
@@ -19,6 +21,7 @@ import com.chinesedreamer.jira.biz.sysconfig.constant.SysConfigConstant;
 import com.chinesedreamer.jira.biz.sysconfig.logic.SysConfigLogic;
 import com.chinesedreamer.jira.biz.sysconfig.model.SysConfig;
 import com.chinesedreamer.jira.core.BasicCredentials;
+import com.chinesedreamer.jira.core.IssueType;
 import com.chinesedreamer.jira.core.JiraClient;
 import com.chinesedreamer.jira.core.JiraException;
 import com.chinesedreamer.jira.core.Priority;
@@ -44,6 +47,8 @@ public class JiraSyncServiceImpl implements JiraSyncService{
 	private SysConfigLogic sysConfigLogic;
 	@Resource
 	private JiraPriorityLogic jiraPriorityLogic;
+	@Resource
+	private JiraIssueTypeLogic jiraIssueTypeLogic;
 	
 	private JiraClient jiraClient;
 	private BasicCredentials creds;
@@ -125,6 +130,31 @@ public class JiraSyncServiceImpl implements JiraSyncService{
 			this.jiraPriorityLogic.save(jiraPriority);
 		}
 		logger.info("********** sync priority end");
+	}
+
+	@Override
+	public void syncIssueType() throws JiraException {
+		logger.info("********** sync issue type begin");
+		SysConfig config = this.sysConfigLogic.findByProperty(SysConfigConstant.SYNC_ISSUE_TYPE_IDS);
+		if (null == config) {
+			logger.info("********** missing config of issue type configuration. Key:{}",SysConfigConstant.SYNC_ISSUE_TYPE_IDS);
+			return;
+		}
+		String[] issueTypeIds = config.getPropertyValue().split(",");
+		for (String id : issueTypeIds) {
+			IssueType issueType = IssueType.get(this.initJiraClient().getRestClient(), id);
+			JiraIssueType jiraIssueType = this.jiraIssueTypeLogic.findByJiraId(issueType.getId());
+			if (null == jiraIssueType) {
+				jiraIssueType = new JiraIssueType();
+			}
+			jiraIssueType.setJiraId(issueType.getId());
+			jiraIssueType.setSelf(issueType.getSelf());
+			jiraIssueType.setName(issueType.getName());
+			jiraIssueType.setDescription(issueType.getDescription());
+			logger.info("********** update issue type:{}", issueType.getName());
+			this.jiraIssueTypeLogic.save(jiraIssueType);
+		}
+		logger.info("********** sync issue type end");
 	}
 
 	

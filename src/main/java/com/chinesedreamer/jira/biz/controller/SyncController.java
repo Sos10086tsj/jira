@@ -80,4 +80,12 @@ public class SyncController {
 		this.jiraSyncService.syncPriority();
 		logger.info("********** sync priority info end");
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "issueType", method = RequestMethod.POST)
+	public void  syncIssueType(Model model) throws JiraException{
+		logger.info("********** sync issue type info begin");
+		this.jiraSyncService.syncIssueType();
+		logger.info("********** sync issue type info end");
+	}
 }

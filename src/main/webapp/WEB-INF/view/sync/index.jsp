@@ -18,6 +18,7 @@
 		<div><a href="${pageContext.request.contextPath}/sync/user">同步用户</a></div>
 		<div><a href="${pageContext.request.contextPath}/sync/project">同步项目</a></div>
 		<div><button onclick="syncHelper.syncPriority()">同步优先级</button></div>
+		<div><button onclick="syncHelper.syncIssueType()">同步问题类型</button></div>
 	</div>
 </body>
 
