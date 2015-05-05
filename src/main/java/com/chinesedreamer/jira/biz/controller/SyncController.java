@@ -72,4 +72,12 @@ public class SyncController {
 		this.jiraSyncService.syncProject(project);
 		logger.info("********** sync project info end, project:{}", project);
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "priority", method = RequestMethod.POST)
+	public void  syncPriority(Model model) throws JiraException{
+		logger.info("********** sync priority info begin");
+		this.jiraSyncService.syncPriority();
+		logger.info("********** sync priority info end");
+	}
 }

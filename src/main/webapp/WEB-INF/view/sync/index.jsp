@@ -6,6 +6,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <script src="${pageContext.request.contextPath}/static/plugins/jquery/jquery-2.1.1.js"/></script>
 <script src="${pageContext.request.contextPath}/static/js/syncHelper.js"/></script>
+<script>
+	var ctx = '${pageContext.request.contextPath}';
+</script>
+
 <title>Jira - Sync System </title>
 </head>
 <body>
@@ -13,6 +17,7 @@
 		<div>同步列表</div>
 		<div><a href="${pageContext.request.contextPath}/sync/user">同步用户</a></div>
 		<div><a href="${pageContext.request.contextPath}/sync/project">同步项目</a></div>
+		<div><button onclick="syncHelper.syncPriority()">同步优先级</button></div>
 	</div>
 </body>
 

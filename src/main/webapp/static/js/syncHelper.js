@@ -39,6 +39,19 @@ syncHelper = {
 				}
 			});
 		}
+	},
+	
+	syncPriority : function(){
+		$.ajax({
+			type: "POST",
+			url : ctx + "/sync/priority",
+			success: function(data){
+				alert("同步结束");
+			},
+			failure : function(){
+				alert("同步异常");
+			}
+		});
 	}
 };
 $(function() {
