@@ -24,6 +24,12 @@ public @Getter @Setter class JiraStatus extends BaseEntity<Long>{
 	 */
 	private static final long serialVersionUID = -4743764328975235631L;
 
+	@Column(name = "jira_id")
+	private String jiraId;
+	
+	@Column
+	private String self;
+	
 	@Column
 	private String name;
 	

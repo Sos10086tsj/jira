@@ -45,6 +45,10 @@
 		<commons.fileupload.version>1.2.1</commons.fileupload.version>
 		<ommons.io.version>2.4</ommons.io.version>
 		<spring.data.jpa.version>1.7.0.RELEASE</spring.data.jpa.version>
+		<aspectj.version>1.8.1</aspectj.version>
+		<aopalliance.version>1.0</aopalliance.version>
+		<druid.version>1.0.7</druid.version>
+		<postgres.version>9.3-1100.jdbc4</postgres.version>
 	</properties>
 
 	<dependencies>
@@ -218,6 +222,30 @@
 			<version>${hibernate.commons.annotaions.version}</version>
 		</dependency>
 		<!-- hibernate end -->
+		
+		<!-- spring dependency start -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+			<version>${aopalliance.version}</version>
+		</dependency>
+		<!-- spring dependency end -->
+		<!-- datasource -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>${druid.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgres.version}</version>
+			</dependency>
 	</dependencies>
 	<build>
 		<finalName>jira</finalName>

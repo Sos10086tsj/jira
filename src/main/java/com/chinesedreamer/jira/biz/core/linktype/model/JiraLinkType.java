@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.chinesedreamer.jira.base.model.JiraBaseEntity;
+import com.chinesedreamer.jira.base.model.BaseEntity;
 
 /**
  * Description: 
@@ -17,13 +17,19 @@ import com.chinesedreamer.jira.base.model.JiraBaseEntity;
  */
 @Entity
 @Table(name = "t_supp_jira_linktype")
-public @Getter @Setter class JiraLinkType extends JiraBaseEntity<Long>{
+public @Getter @Setter class JiraLinkType extends BaseEntity<Long>{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5538461950625073403L;
 
+	@Column(name = "jira_id")
+	private String jiraId;
+	
+	@Column
+	private String self;
+	
 	@Column
 	private String name;
 	

@@ -76,7 +76,7 @@ public class JiraSyncServiceImpl implements JiraSyncService{
 			jiraUser = new JiraUser();
 		}
 		jiraUser.setUsername(username);
-		jiraUser.setAcitve(user.isActive());
+		jiraUser.setActive(user.isActive());
 		jiraUser.setName(user.getName());
 		jiraUser.setDisplayName(user.getDisplayName());
 		jiraUser.setEmail(user.getEmail());

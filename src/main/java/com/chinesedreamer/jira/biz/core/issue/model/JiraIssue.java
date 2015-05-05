@@ -6,12 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import lombok.Getter;
 import lombok.Setter;
 
-import com.chinesedreamer.jira.base.model.JiraBaseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.chinesedreamer.jira.base.model.BaseEntity;
 
 /**
  * Description: 
@@ -21,13 +21,19 @@ import com.chinesedreamer.jira.base.model.JiraBaseEntity;
  */
 @Entity
 @Table(name = "t_supp_jira_issue")
-public @Getter @Setter class JiraIssue extends JiraBaseEntity<Long>{
+public @Getter @Setter class JiraIssue extends BaseEntity<Long>{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -798743551838483899L;
 
+	@Column(name = "jira_id")
+	private String jiraId;
+	
+	@Column
+	private String self;
+	
 	@Column
 	private String key;
 	

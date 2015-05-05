@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.chinesedreamer.jira.base.model.JiraBaseEntity;
+import com.chinesedreamer.jira.base.model.BaseEntity;
 
 /**
  * Description: 
@@ -17,12 +17,18 @@ import com.chinesedreamer.jira.base.model.JiraBaseEntity;
  */
 @Entity
 @Table(name = "t_supp_jira_issue_type")
-public @Getter @Setter class JiraIssueType extends JiraBaseEntity<Long>{
+public @Getter @Setter class JiraIssueType extends BaseEntity<Long>{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7658350435671215075L;
+
+	@Column(name = "jira_id")
+	private String jiraId;
+	
+	@Column
+	private String self;
 	
 	@Column
 	private String name;
