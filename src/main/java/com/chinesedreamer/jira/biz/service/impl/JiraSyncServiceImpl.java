@@ -249,7 +249,8 @@ public class JiraSyncServiceImpl implements JiraSyncService{
 			logger.info("********** jira project:{} not exists",jiraProject);
 			return;
 		}
-		SearchResult searchResult = Issue.search(this.initJiraClient().getRestClient(), "project=" + jiraProject.getKey());
+		//抓取最新一周的issue
+		SearchResult searchResult = Issue.search(this.initJiraClient().getRestClient(), "project = " + jiraProject.getKey() +" AND created >= -1w AND created <= 1d ");
 		for (Issue issue : searchResult.issues) {
 			JiraIssue jiraIssue = this.jiraIssueLogic.findByJiraId(issue.getId());
 			if (null == jiraIssue) {

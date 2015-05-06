@@ -24,6 +24,8 @@
 			expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 	<context:annotation-config />
+	
+	<task:annotation-driven />
 
 	<bean
         class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
