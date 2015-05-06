@@ -2,6 +2,8 @@ package com.chinesedreamer.jira.biz.service.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -12,6 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.chinesedreamer.jira.biz.core.issue.logic.JiraIssueLogic;
+import com.chinesedreamer.jira.biz.core.issue.logic.JiraIssueVersionLogic;
+import com.chinesedreamer.jira.biz.core.issue.model.JiraIssue;
+import com.chinesedreamer.jira.biz.core.issue.model.JiraIssueVersion;
 import com.chinesedreamer.jira.biz.core.issuetype.logic.JiraIssueTypeLogic;
 import com.chinesedreamer.jira.biz.core.issuetype.model.JiraIssueType;
 import com.chinesedreamer.jira.biz.core.priority.logic.JiraPriorityLogic;
@@ -29,6 +35,8 @@ import com.chinesedreamer.jira.biz.sysconfig.constant.SysConfigConstant;
 import com.chinesedreamer.jira.biz.sysconfig.logic.SysConfigLogic;
 import com.chinesedreamer.jira.biz.sysconfig.model.SysConfig;
 import com.chinesedreamer.jira.core.BasicCredentials;
+import com.chinesedreamer.jira.core.Issue;
+import com.chinesedreamer.jira.core.Issue.SearchResult;
 import com.chinesedreamer.jira.core.IssueType;
 import com.chinesedreamer.jira.core.JiraClient;
 import com.chinesedreamer.jira.core.JiraException;
@@ -63,6 +71,10 @@ public class JiraSyncServiceImpl implements JiraSyncService{
 	private JiraStatusLogic jiraStatusLogic;
 	@Resource
 	private JiraVersionLogic jiraVersionLogic;
+	@Resource
+	private JiraIssueLogic jiraIssueLogic;
+	@Resource
+	private JiraIssueVersionLogic jiraIssueVersionLogic;
 	
 	private JiraClient jiraClient;
 	private BasicCredentials creds;
@@ -227,6 +239,91 @@ public class JiraSyncServiceImpl implements JiraSyncService{
 			this.jiraVersionLogic.save(jiraVersion);
 		}
 		logger.info("********** sync project version end");
+	}
+
+	@Override
+	public void syncProjectIssue(String projectIdOrKey) throws JiraException {
+		logger.info("********** sync project issue begin");
+		JiraProject jiraProject = this.jiraProjectLogic.findByJiraId(projectIdOrKey);
+		if (null == jiraProject) {
+			logger.info("********** jira project:{} not exists",jiraProject);
+			return;
+		}
+		SearchResult searchResult = Issue.search(this.initJiraClient().getRestClient(), "project=" + jiraProject.getKey());
+		for (Issue issue : searchResult.issues) {
+			JiraIssue jiraIssue = this.jiraIssueLogic.findByJiraId(issue.getId());
+			if (null == jiraIssue) {
+				jiraIssue = new JiraIssue();
+			}
+			jiraIssue.setJiraId(issue.getId());
+			jiraIssue.setKey(issue.getKey());
+			jiraIssue.setSelf(issue.getSelf());
+			//assignee
+			if (null != issue.getAssignee()) {
+				jiraIssue.setAssigne(issue.getAssignee().getName());
+			}
+			jiraIssue.setDescription(issue.getDescription());
+			if (null != issue.getDueDate()) {
+				jiraIssue.setDueDate(issue.getDueDate());
+			}
+			if (null != issue.getIssueType()) {
+				jiraIssue.setIssueType(issue.getIssueType().getId());
+			}
+			if (null != issue.getParent()) {
+				jiraIssue.setParent(issue.getParent().getId());
+			}
+			if (null != issue.getPriority()) {
+				jiraIssue.setPriority(issue.getPriority().getId());
+			}
+			if (null != issue.getProject()) {
+				jiraIssue.setProject(issue.getProject().getId());
+			}
+			if (null != issue.getReporter()) {
+				jiraIssue.setReportor(issue.getReporter().getName());
+			}
+			if (null != issue.getStatus()) {
+				jiraIssue.setStatus(issue.getStatus().getId());
+			}
+			jiraIssue.setSummary(issue.getSummary());
+			if (null != issue.getTimeEstimate()) {
+				jiraIssue.setTimeEstemate(issue.getTimeEstimate());
+			}
+			if (null != issue.getTimeSpent()) {
+				jiraIssue.setTimeSpent(issue.getTimeSpent());
+			}
+			jiraIssue.setUpdateDate(new Date());
+			List<JiraIssueVersion> jiraIssueVersions = this.jiraIssueVersionLogic.findByProjectJiraIdAndIssueJiraId(jiraProject.getJiraId(), issue.getId());
+			List<JiraIssueVersion> saveIssueVersions = new ArrayList<JiraIssueVersion>();
+			List<Long> delete = new ArrayList<Long>();
+			for (JiraIssueVersion jiraIssueVersion : jiraIssueVersions) {
+				delete.add(jiraIssueVersion.getId());
+			}
+			if (!issue.getFixVersions().isEmpty()) {
+				for (Version version : issue.getFixVersions()) {
+					JiraIssueVersion exist = this.jiraIssueVersionLogic.findByProjectJiraIdAndVersionJiraIdAndIssueJiraId(jiraProject.getJiraId(), version.getId(), issue.getId());
+					if (null == exist) {
+						exist = new JiraIssueVersion();
+						exist.setIssueJiraId(issue.getId());
+						exist.setProjectJiraId(jiraProject.getJiraId());
+						exist.setVersionJiraId(version.getId());
+						saveIssueVersions.add(exist);
+					}else {
+						if (delete.contains(exist.getId())) {
+							delete.remove(exist.getId());
+						}
+					}
+				}
+			}
+			for (Long id : delete) {
+				this.jiraIssueVersionLogic.delete(id);
+			}
+			for (JiraIssueVersion save : saveIssueVersions) {
+				this.jiraIssueVersionLogic.save(save);
+			}
+			logger.info("********** update roject issue:{}", issue.getKey());
+			this.jiraIssueLogic.save(jiraIssue);
+		}
+		logger.info("********** sync project issue end");
 	}
 
 	

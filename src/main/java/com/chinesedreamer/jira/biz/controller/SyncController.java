@@ -97,4 +97,16 @@ public class SyncController {
 	public void syncProjectVersion(Model model, String projectIdOrKey) throws JiraException{
 		this.jiraSyncService.syncProjectVersion(projectIdOrKey);
 	}
+	
+	@RequestMapping(value = "project/issue", method = RequestMethod.GET)
+	public String showSyncProjectIssue(Model model){
+		model.addAttribute("projects", this.jiraProjectService.getAllProjects());
+		return "/sync/syncProjectIssue";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "project/issue", method = RequestMethod.POST)
+	public void syncProjectIssue(Model model, String projectIdOrKey) throws JiraException{
+		this.jiraSyncService.syncProjectIssue(projectIdOrKey);
+	}
 }

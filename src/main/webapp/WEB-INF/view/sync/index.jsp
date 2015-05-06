@@ -21,6 +21,7 @@
 		<div><button onclick="syncHelper.syncIssueType()">同步问题类型</button></div>
 		<div><button onclick="syncHelper.syncIssueStatus()">同步问题状态</button></div>
 		<div><a href="${pageContext.request.contextPath}/sync/project/version">同步项目版本</a></div>
+		<div><a href="${pageContext.request.contextPath}/sync/project/issue">同步项目issue</a></div>
 	</div>
 </body>
 

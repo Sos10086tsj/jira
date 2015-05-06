@@ -49,4 +49,11 @@ public interface JiraSyncService {
 	 * @throws JiraException
 	 */
 	public void syncProjectVersion(String projectIdOrKey) throws JiraException;
+	
+	/**
+	 * 同步项目issue列表
+	 * @param projectIdOrKey
+	 * @throws JiraException
+	 */
+	public void syncProjectIssue(String projectIdOrKey) throws JiraException;
 }

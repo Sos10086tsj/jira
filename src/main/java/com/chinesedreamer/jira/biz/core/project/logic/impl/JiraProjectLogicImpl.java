@@ -29,5 +29,9 @@ public class JiraProjectLogicImpl extends BaseLogicImpl<JiraProject, Long> imple
 	public List<JiraProject> findAll() {
 		return this.repository.findAll();
 	}
+	@Override
+	public JiraProject findByJiraId(String jiraId) {
+		return this.repository.findByJiraId(jiraId);
+	}
 
 }

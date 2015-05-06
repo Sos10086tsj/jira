@@ -41,26 +41,29 @@ public @Getter @Setter class JiraIssue extends BaseEntity<Long>{
 	private String description;
 	
 	@Column
-	private Long assigne;
+	private String assigne;
 	
 	@Column(name = "due_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date dueDate;
 	
 	@Column(name = "issue_type")
-	private Long issueType;
+	private String issueType;
 	
 	@Column
-	private Long priority;
+	private String parent;
 	
 	@Column
-	private Long project;
+	private String priority;
 	
 	@Column
-	private Long reportor;
+	private String project;
 	
 	@Column
-	private Long status;
+	private String reportor;
+	
+	@Column
+	private String status;
 	
 	@Column
 	private String summary;
@@ -76,7 +79,7 @@ public @Getter @Setter class JiraIssue extends BaseEntity<Long>{
 	
 	@Column(name = "create_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date createDate;
+	private Date createDate = new Date();
 	
 	@Column(name = "update_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

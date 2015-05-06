@@ -11,4 +11,5 @@ import com.chinesedreamer.jira.biz.core.project.model.JiraProject;
  */
 public interface JiraProjectRepository extends BaseRepository<JiraProject, Long>{
 	public JiraProject findByKey(String key);
+	public JiraProject findByJiraId(String jiraId);
 }
