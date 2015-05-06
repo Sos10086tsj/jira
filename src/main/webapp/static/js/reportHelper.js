@@ -1,54 +1,40 @@
+reportHelper = {
+	generateProjectReport : function(){
+		var projectJiraId = $("#js_rpt_project").val();
+		var versionJiraId = $("#js_rpt_project_version").val();
+		if(projectJiraId.length <= 0 || versionJiraId.length <= 0){
+			alert("请选择项目与版本！");
+			return;
+		}
+		window.location.href = ctx + "/report/showProjectReport?projectJiraId=" + projectJiraId + "&versionJiraId=" + versionJiraId;
+	}
+};
 $(function() {
-	//rapid view选中事件
-	$("#rapid_view_select").change(function(){
+	$("#js_rpt_project").change(function(){
+		var projectJiraId = $(this).val();
 		$.ajax({
-			url : '/report/loadRapidViewSprint',
-			type : 'post',
-			async : true,
+			type: "POST",
+			url : ctx + "/report/projectReport/version",
 			data : {
-				rapidViewId : $("#rapid_view_select").find("option:selected").val()
+				projectJiraId : projectJiraId
 			},
-			success : function(result){				
-				var comp = $("#sprint_select");
+			success: function(data){
+				var comp = $("#js_rpt_project_version");
 				comp.empty();
-				var dataList = eval(result);
-				if(dataList){
-					for(i in dataList){
-						var record = dataList[i];
-						comp.append("<option value='" + record.id + "'>" + record.name + "</option>");
-					}
-				}
+				if(!data || data == "[]"){
+					comp.attr("disabled","disabled");
+            	}else{
+            		var versions = eval(data);
+                	for(var i =0; i < versions.length; i++){
+                		var version = versions[i];
+                		comp.append("<option value='" + version.jiraId + "'>" + version.name + "</option>");
+                	}
+                	comp.removeAttr("disabled");
+            	}	
 			},
 			failure : function(){
-				alert("获取列表失败！");
+				alert("同步异常");
 			}
 		});
-	});
-	
-	//生成报告
-	$("#sprint_rpt_btn").off("click").on("click", function (){
-		var rapidViewId = $("#rapid_view_select").find("option:selected").val();
-		var sprintId = $("#sprint_select").find("option:selected").val();
-		$("#report").load("/report/generateSprintReport?rapidViewId=" + rapidViewId + "&sprintId=" + sprintId);
-	});
-	
-	//伸缩
-	$('tr.parent').click(function(){   // 获取所谓的父行  
-
-        $(this).toggleClass("selected")   // 添加/删除高亮  
-        .siblings('.child_'+this.id).toggle();  // 隐藏/显示所谓的子行  
-//		$(this).toggleClass("selected").siblings('.child_row_'+this.id).toggle();
-//		$(this).toggleClass("selected").siblings('.include_row_'+this.id).toggle();
-	}).click();  
-	
-	//生成个人报告
-	$("#assignee_rpt_btn").off("click").on("click", function (){
-		var rapidViewId = $("#rapid_view_select").find("option:selected").val();
-		var sprintId = $("#sprint_select").find("option:selected").val();
-		$("#report").load("/report/generateAssigneeReport?rapidViewId=" + rapidViewId + "&sprintId=" + sprintId);
-	});
-	
-	$("#daily_rpt_btn").off("click").on("click", function (){
-		$("#report").load("/report/generateDailyReport");
 	});
 });

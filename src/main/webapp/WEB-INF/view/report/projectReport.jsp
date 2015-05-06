@@ -6,7 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="${pageContext.request.contextPath}/static/plugins/jquery/jquery-2.1.1.js"/></script>
-<script src="${pageContext.request.contextPath}/static/js/syncHelper.js"/></script>
+<script src="${pageContext.request.contextPath}/static/js/reportHelper.js"/></script>
 <script>
 	var ctx = '${pageContext.request.contextPath}';
 </script>
@@ -16,11 +16,19 @@
 <body>
 	<div>
 		<div>
-			<input id="js_sync_user_username" placeholder="请输入需要同步的用户"/>
-			<button onclick="syncHelper.syncUser()">同步</button>
+			<label>项目</label>
+			<select id="js_rpt_project" onclick="">
+				<c:forEach items="${projects }" var="item">
+					<option value="${item.jiraId}">${item.name}</option>
+				</c:forEach>
+			</select>
+			<label>版本</label>
+			<select id="js_rpt_project_version" disabled="disabled">
+			</select>
+			<button onclick="reportHelper.generateProjectReport()">生成报表</button>
 		</div>
 		<div>
-			<a href="${pageContext.request.contextPath}/sync">返回</a>
+			<a href="${pageContext.request.contextPath}/report">返回</a>
 		</div>
 	</div>
 </body>

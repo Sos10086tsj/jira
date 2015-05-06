@@ -1,5 +1,7 @@
 package com.chinesedreamer.jira.biz.core.version.logic.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -23,6 +25,11 @@ public class JiraVersionLogicImpl extends BaseLogicImpl<JiraVersion, Long> imple
 	@Override
 	public JiraVersion findByJiraId(String jiraId) {
 		return this.repository.findByJiraId(jiraId);
+	}
+
+	@Override
+	public List<JiraVersion> findByProjectJiraId(String projectJiraId) {
+		return this.repository.findByProjectJiraId(projectJiraId);
 	}
 
 }

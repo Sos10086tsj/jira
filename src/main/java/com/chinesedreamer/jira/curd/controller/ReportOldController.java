@@ -24,7 +24,7 @@ import com.chinesedreamer.jira.core.greenhopper.Sprint;
  * @version beta
  */
 @Controller
-@RequestMapping(value = "report")
+@RequestMapping(value = "reportOld")
 public class ReportOldController {
 	@Resource
 	private JiraReportOldService jiraReportService;
