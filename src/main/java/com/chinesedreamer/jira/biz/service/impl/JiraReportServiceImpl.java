@@ -1,5 +1,6 @@
 package com.chinesedreamer.jira.biz.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -66,6 +67,8 @@ public class JiraReportServiceImpl implements JiraReportService{
 		vo.setVersion(jiraVersion.getName());
 		if (null != jiraVersion.getReleaseDate()) {
 			vo.setReleaseDate(jiraVersion.getReleaseDate());
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			vo.setReleaseDateStr(format.format(jiraVersion.getReleaseDate()));
 		}
 		//3. 获取版本内issue
 		List<JiraIssueVersion> jiraIssueVersions = this.jiraIssueVersionLogic.findByProjectJiraIdAndVersionJiraId(projectJiraId, versionJiraId);
@@ -102,11 +105,14 @@ public class JiraReportServiceImpl implements JiraReportService{
 		vo.setBugs(bugs);
 		//4. 统计
 		vo.setTotal(uncompletedIssues.size() + completedIssues.size());
+		vo.setCompletedNum(completedIssues.size());
+		vo.setBugNum(bugs.size());
 		if (uncompletedIssues.size() + completedIssues.size() == 0) {
 			vo.setCompletionRate(0.00f);
 		}else {
 			vo.setCompletionRate(1.00f * completedIssues.size() / (uncompletedIssues.size() + completedIssues.size()));
 		}
+		vo.setCompletionRateStr(vo.getCompletionRate() * 100 + "%");
 		return vo;
 	}
 
@@ -136,6 +142,8 @@ public class JiraReportServiceImpl implements JiraReportService{
 		}
 		if (null != jiraIssue.getDueDate()) {
 			vo.setDueDate(jiraIssue.getDueDate());
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			vo.setDueDateStr(format.format(jiraIssue.getDueDate()));
 		}
 		if (StringUtils.isNotEmpty(jiraIssue.getStatus())) {
 			JiraStatus jiraStatus = this.jiraStatusLogic.findByJiraId(jiraIssue.getStatus());

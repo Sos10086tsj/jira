@@ -11,4 +11,5 @@ public interface IpmEmailSender {
 	
 	public void sendAttachEmail(String from, EmailRecipient recipient, String subject, String content, String attachPath);
 	
+	public void sendTemplateEmail(String from, EmailRecipient recipient, String subject, String templatePath,Object obj);
 }

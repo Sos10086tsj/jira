@@ -50,6 +50,9 @@
 		<druid.version>1.0.7</druid.version>
 		<postgres.version>9.3-1100.jdbc4</postgres.version>
 		<javax.mail.version>1.4.4</javax.mail.version>
+		<apache.velocity.version>1.7</apache.velocity.version>
+		<apache.velocity.tools.version>2.0</apache.velocity.tools.version>
+		<aspectj.version>1.5.4</aspectj.version>
 	</properties>
 
 	<dependencies>
@@ -252,6 +255,23 @@
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>${javax.mail.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+		<!-- velocity -->
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>${apache.velocity.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity-tools</artifactId>
+			<version>${apache.velocity.tools.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

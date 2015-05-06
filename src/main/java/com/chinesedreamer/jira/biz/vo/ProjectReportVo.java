@@ -17,9 +17,13 @@ public @Getter @Setter class ProjectReportVo {
 	private String project;//项目
 	private String version;//版本
 	private Date releaseDate;//版本截止日期
+	private String releaseDateStr = "";
 	//总体信息
 	private Integer total;//任务总数
+	private Integer completedNum;//完成数
+	private Integer bugNum;//bug总数
 	private Float completionRate;//完成率
+	private String completionRateStr;//完成率
 	
 	//issue列表
 	private List<JiraIssueVo> uncompletedIssues;//未完成列表

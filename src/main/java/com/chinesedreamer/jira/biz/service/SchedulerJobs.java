@@ -10,4 +10,6 @@ import com.chinesedreamer.jira.core.JiraException;
  */
 public interface SchedulerJobs {
 	public void sysncJiraIssue() throws JiraException;
+	
+	public void dailyReport() throws JiraException;
 }

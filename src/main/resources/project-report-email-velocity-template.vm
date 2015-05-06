@@ -1,0 +1,115 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+    <body>
+        <div>
+        
+        	<div>
+				<div>
+					<label>总体统计</label>
+				</div>
+				<div>
+					<table border="1">
+						<tbody>
+							<tr>
+								<td>项目</td>
+								<td>$template.project</td>
+								<td>版本</td>
+								<td>$template.version</td>
+								<td colspan="2">截止日期</td>
+								<td colspan="2">$template.releaseDateStr</td>
+							</tr>
+							
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<div>
+				<div>
+					<label>未完成任务</label>
+				</div>
+				<div>
+					<table border="1">
+						<thead>
+							<tr>
+								<th>JIRA#</th>
+								<th>Summary</th>
+								<th>Assignee</th>
+								<th>Status</th>
+								<th>Due Date</th>
+							</tr>
+						</thead>
+						#foreach($element in $template.uncompletedIssues)
+							<tr>
+								<td>$element.key</td>
+								<td>$element.summary</td>
+								<td>$element.assignee</td>
+								<td>$element.status</td>
+								<td>$element.dueDateStr</td>
+							</tr>
+						#end
+					</table>
+				</div>
+			</div>
+			
+			<div>
+				<div>
+					<label>Bug</label>
+				</div>
+				<div>
+					<table border="1">
+						<thead>
+							<tr>
+								<th>JIRA#</th>
+								<th>Summary</th>
+								<th>Assignee</th>
+								<th>Status</th>
+								<th>Due Date</th>
+							</tr>
+						</thead>
+						#foreach($element in $template.bugs)
+							<tr>
+								<td>$element.key</td>
+								<td>$element.summary</td>
+								<td>$element.assignee</td>
+								<td>$element.status</td>
+								<td>$element.dueDateStr</td>
+							</tr>
+						#end
+					</table>
+				</div>
+			</div>
+			
+			<div>
+				<div>
+					<label>已完成任务</label>
+				</div>
+				<div>
+					<table border="1">
+						<thead>
+							<tr>
+								<th>JIRA#</th>
+								<th>Summary</th>
+								<th>Assignee</th>
+								<th>Status</th>
+								<th>Due Date</th>
+							</tr>
+						</thead>
+						#foreach($element in $template.completedIssues)
+							<tr>
+								<td>$element.key</td>
+								<td>$element.summary</td>
+								<td>$element.assignee</td>
+								<td>$element.status</td>
+								<td>$element.dueDateStr</td>
+							</tr>
+						#end
+					</table>
+				</div>
+			</div>
+			
+        </div>
+    </body>
+</html>

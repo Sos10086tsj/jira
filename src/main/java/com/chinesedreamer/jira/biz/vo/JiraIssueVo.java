@@ -16,5 +16,6 @@ public @Getter @Setter class JiraIssueVo {
 	private String summary;
 	private String assignee;
 	private Date dueDate;
+	private String dueDateStr;
 	private String status;
 }

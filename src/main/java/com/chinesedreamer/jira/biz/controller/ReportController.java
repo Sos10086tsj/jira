@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.chinesedreamer.jira.biz.core.project.service.JiraProjectService;
 import com.chinesedreamer.jira.biz.core.version.model.JiraVersion;
 import com.chinesedreamer.jira.biz.core.version.service.JiraVersionService;
-import com.chinesedreamer.jira.biz.service.EmailService;
 import com.chinesedreamer.jira.biz.service.JiraReportService;
 import com.chinesedreamer.jira.core.JiraException;
 
@@ -33,8 +32,6 @@ public class ReportController {
 	private JiraVersionService jiraVersionService;
 	@Resource
 	private JiraReportService jiraReportService;
-	@Resource
-	private EmailService emailService;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String index(Model model){
