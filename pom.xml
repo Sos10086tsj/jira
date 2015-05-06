@@ -49,6 +49,7 @@
 		<aopalliance.version>1.0</aopalliance.version>
 		<druid.version>1.0.7</druid.version>
 		<postgres.version>9.3-1100.jdbc4</postgres.version>
+		<javax.mail.version>1.4.4</javax.mail.version>
 	</properties>
 
 	<dependencies>
@@ -236,16 +237,22 @@
 		</dependency>
 		<!-- spring dependency end -->
 		<!-- datasource -->
-			<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>druid</artifactId>
-				<version>${druid.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>postgresql</groupId>
-				<artifactId>postgresql</artifactId>
-				<version>${postgres.version}</version>
-			</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgres.version}</version>
+		</dependency>
+		<!-- java mail -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>${javax.mail.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>jira</finalName>
