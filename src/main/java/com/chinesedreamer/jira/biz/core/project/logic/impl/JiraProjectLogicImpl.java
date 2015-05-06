@@ -1,5 +1,7 @@
 package com.chinesedreamer.jira.biz.core.project.logic.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -22,6 +24,10 @@ public class JiraProjectLogicImpl extends BaseLogicImpl<JiraProject, Long> imple
 	@Override
 	public JiraProject findByKey(String key) {
 		return this.repository.findByKey(key);
+	}
+	@Override
+	public List<JiraProject> findAll() {
+		return this.repository.findAll();
 	}
 
 }

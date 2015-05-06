@@ -35,4 +35,18 @@ public interface JiraSyncService {
 	 * @throws JiraException
 	 */
 	public void syncIssueType() throws JiraException;
+	
+	/**
+	 * 同步问题状态
+	 * @throws JiraException
+	 */
+	public void syncStatus() throws JiraException;
+	
+	
+	/**
+	 * 同步项目版本
+	 * @param projectIdOrKey
+	 * @throws JiraException
+	 */
+	public void syncProjectVersion(String projectIdOrKey) throws JiraException;
 }

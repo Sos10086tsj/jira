@@ -1,9 +1,13 @@
 package com.chinesedreamer.jira.biz.service.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Properties;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,8 +18,12 @@ import com.chinesedreamer.jira.biz.core.priority.logic.JiraPriorityLogic;
 import com.chinesedreamer.jira.biz.core.priority.model.JiraPriority;
 import com.chinesedreamer.jira.biz.core.project.logic.JiraProjectLogic;
 import com.chinesedreamer.jira.biz.core.project.model.JiraProject;
+import com.chinesedreamer.jira.biz.core.status.logic.JiraStatusLogic;
+import com.chinesedreamer.jira.biz.core.status.model.JiraStatus;
 import com.chinesedreamer.jira.biz.core.user.logic.JiraUserLogic;
 import com.chinesedreamer.jira.biz.core.user.model.JiraUser;
+import com.chinesedreamer.jira.biz.core.version.logic.JiraVersionLogic;
+import com.chinesedreamer.jira.biz.core.version.model.JiraVersion;
 import com.chinesedreamer.jira.biz.service.JiraSyncService;
 import com.chinesedreamer.jira.biz.sysconfig.constant.SysConfigConstant;
 import com.chinesedreamer.jira.biz.sysconfig.logic.SysConfigLogic;
@@ -26,7 +34,9 @@ import com.chinesedreamer.jira.core.JiraClient;
 import com.chinesedreamer.jira.core.JiraException;
 import com.chinesedreamer.jira.core.Priority;
 import com.chinesedreamer.jira.core.Project;
+import com.chinesedreamer.jira.core.Status;
 import com.chinesedreamer.jira.core.User;
+import com.chinesedreamer.jira.core.Version;
 import com.chinesedreamer.jira.reader.PropertiesReader;
 
 /**
@@ -49,6 +59,10 @@ public class JiraSyncServiceImpl implements JiraSyncService{
 	private JiraPriorityLogic jiraPriorityLogic;
 	@Resource
 	private JiraIssueTypeLogic jiraIssueTypeLogic;
+	@Resource
+	private JiraStatusLogic jiraStatusLogic;
+	@Resource
+	private JiraVersionLogic jiraVersionLogic;
 	
 	private JiraClient jiraClient;
 	private BasicCredentials creds;
@@ -155,6 +169,64 @@ public class JiraSyncServiceImpl implements JiraSyncService{
 			this.jiraIssueTypeLogic.save(jiraIssueType);
 		}
 		logger.info("********** sync issue type end");
+	}
+
+	@Override
+	public void syncStatus() throws JiraException {
+		logger.info("********** sync issue status begin");
+		SysConfig config = this.sysConfigLogic.findByProperty(SysConfigConstant.SYNC_ISSUE_STATUS_IDS);
+		if (null == config) {
+			logger.info("********** missing config of issue status configuration. Key:{}",SysConfigConstant.SYNC_ISSUE_STATUS_IDS);
+			return;
+		}
+		String[] issueStatusIds = config.getPropertyValue().split(",");
+		for (String id : issueStatusIds) {
+			Status status = Status.get(this.initJiraClient().getRestClient(), id);
+			JiraStatus jiraStatus = this.jiraStatusLogic.findByJiraId(status.getId());
+			if (null == jiraStatus) {
+				jiraStatus = new JiraStatus();
+			}
+			jiraStatus.setJiraId(status.getId());
+			jiraStatus.setSelf(status.getSelf());
+			jiraStatus.setName(status.getName());
+			jiraStatus.setDescription(status.getDescription());
+			logger.info("********** update status type:{}", status.getName());
+			this.jiraStatusLogic.save(jiraStatus);
+		}
+		logger.info("********** sync issue status end");
+	}
+
+	@Override
+	public void syncProjectVersion(String projectIdOrKey) throws JiraException {
+		logger.info("********** sync project version begin");
+		Project project = this.initJiraClient().getProject(projectIdOrKey);
+		if (null == project) {
+			logger.info("********** project:{} not exists",project);
+			return;
+		}
+		List<Version> versions = project.getVersions();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		for (Version version : versions) {
+			JiraVersion jiraVersion = this.jiraVersionLogic.findByJiraId(version.getId());
+			if (null == jiraVersion) {
+				jiraVersion = new JiraVersion();
+			}
+			jiraVersion.setName(version.getName());
+			jiraVersion.setDescription(version.getDescription());
+			if (StringUtils.isNotEmpty(version.getReleaseDate())) {
+				try {
+					jiraVersion.setReleaseDate(format.parse(version.getReleaseDate()));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+			jiraVersion.setJiraId(version.getId());
+			jiraVersion.setSelf(version.getSelf());
+			jiraVersion.setProjectJiraId(project.getId());
+			logger.info("********** update roject version:{}", version.getName());
+			this.jiraVersionLogic.save(jiraVersion);
+		}
+		logger.info("********** sync project version end");
 	}
 
 	

@@ -2,14 +2,13 @@ package com.chinesedreamer.jira.biz.controller;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.chinesedreamer.jira.biz.core.project.service.JiraProjectService;
 import com.chinesedreamer.jira.biz.service.JiraSyncService;
 import com.chinesedreamer.jira.core.JiraException;
 
@@ -22,11 +21,11 @@ import com.chinesedreamer.jira.core.JiraException;
 @Controller
 @RequestMapping(value = "sync")
 public class SyncController {
-
-	private Logger logger = LoggerFactory.getLogger(SyncController.class);
 	
 	@Resource
 	private JiraSyncService jiraSyncService;
+	@Resource
+	private JiraProjectService jiraProjectService;
 	
 	/**
 	 * 同步首页
@@ -56,9 +55,7 @@ public class SyncController {
 	@ResponseBody
 	@RequestMapping(value = "user", method = RequestMethod.POST)
 	public void  syncUser(Model model, String username) throws JiraException{
-		logger.info("********** sync user info begin, users:{}", username);
 		this.jiraSyncService.syncUser(username);
-		logger.info("********** sync user info end, users:{}", username);
 	}
 	
 	@RequestMapping(value = "project", method = RequestMethod.GET)
@@ -68,24 +65,36 @@ public class SyncController {
 	@ResponseBody
 	@RequestMapping(value = "project", method = RequestMethod.POST)
 	public void  syncProject(Model model, String project) throws JiraException{
-		logger.info("********** sync project info begin, project:{}", project);
 		this.jiraSyncService.syncProject(project);
-		logger.info("********** sync project info end, project:{}", project);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "priority", method = RequestMethod.POST)
 	public void  syncPriority(Model model) throws JiraException{
-		logger.info("********** sync priority info begin");
 		this.jiraSyncService.syncPriority();
-		logger.info("********** sync priority info end");
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "issueType", method = RequestMethod.POST)
 	public void  syncIssueType(Model model) throws JiraException{
-		logger.info("********** sync issue type info begin");
 		this.jiraSyncService.syncIssueType();
-		logger.info("********** sync issue type info end");
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "issueStatus", method = RequestMethod.POST)
+	public void  syncIssueStatus(Model model) throws JiraException{
+		this.jiraSyncService.syncStatus();
+	}
+	
+	@RequestMapping(value = "project/version", method = RequestMethod.GET)
+	public String showSyncProjectVersion(Model model){
+		model.addAttribute("projects", this.jiraProjectService.getAllProjects());
+		return "/sync/syncProjectVersion";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "project/version", method = RequestMethod.POST)
+	public void syncProjectVersion(Model model, String projectIdOrKey) throws JiraException{
+		this.jiraSyncService.syncProjectVersion(projectIdOrKey);
 	}
 }

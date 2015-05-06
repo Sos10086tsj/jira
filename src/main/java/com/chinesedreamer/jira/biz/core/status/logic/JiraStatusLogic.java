@@ -10,5 +10,5 @@ import com.chinesedreamer.jira.biz.core.status.model.JiraStatus;
  * @version beta
  */
 public interface JiraStatusLogic extends BaseLogic<JiraStatus, Long>{
-
+	public JiraStatus findByJiraId(String jiraId);
 }

@@ -65,6 +65,36 @@ syncHelper = {
 				alert("同步异常");
 			}
 		});
+	},
+	
+	syncIssueStatus : function(){
+		$.ajax({
+			type: "POST",
+			url : ctx + "/sync/issueStatus",
+			success: function(data){
+				alert("同步结束");
+			},
+			failure : function(){
+				alert("同步异常");
+			}
+		});
+	},
+	
+	syncProjectVersion : function(){
+		var projectIdOrKey = $("#js_sync_project_version").val();
+		$.ajax({
+			type: "POST",
+			url : ctx + "/sync/project/version",
+			data : {
+				projectIdOrKey : projectIdOrKey
+			},
+			success: function(data){
+				alert("同步结束");
+			},
+			failure : function(){
+				alert("同步异常");
+			}
+		});
 	}
 };
 $(function() {

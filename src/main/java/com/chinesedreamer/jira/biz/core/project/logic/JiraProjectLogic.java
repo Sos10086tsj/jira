@@ -1,5 +1,7 @@
 package com.chinesedreamer.jira.biz.core.project.logic;
 
+import java.util.List;
+
 import com.chinesedreamer.jira.base.logic.BaseLogic;
 import com.chinesedreamer.jira.biz.core.project.model.JiraProject;
 
@@ -11,4 +13,6 @@ import com.chinesedreamer.jira.biz.core.project.model.JiraProject;
  */
 public interface JiraProjectLogic extends BaseLogic<JiraProject, Long>{
 	public JiraProject findByKey(String key);
+	
+	public List<JiraProject> findAll();
 }
