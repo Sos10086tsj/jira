@@ -1,5 +1,6 @@
 package com.chinesedreamer.jira.biz.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -59,6 +60,18 @@ public class ReportController {
 		return "/report/showProjectReport";
 	}
 	
+	@RequestMapping(value = "timeScopeReport", method = RequestMethod.GET)
+	public String timeScopeReport(Model model){
+		return "/report/timeScopeReport";
+	}
+	
+	@RequestMapping(value = "showTimeScopeReport", method = RequestMethod.GET)
+	public String generateTimeScopeReport(Model model,String start,String end) throws Exception{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		model.addAttribute("template", this.jiraReportService.generateTimeScopeReport(format.parse(start), format.parse(end)));
+		return "/report/showTimeScopeReport";
+	}
+	
 	/**
 	 * 配置
 	 * @param model
@@ -82,4 +95,6 @@ public class ReportController {
 		this.jiraRptVersionConfigService.deleteConfig(projectJiraId, versionJiraId);
 		return "redirect:/report/projectReportConfig";
 	}
+	
+	
 }

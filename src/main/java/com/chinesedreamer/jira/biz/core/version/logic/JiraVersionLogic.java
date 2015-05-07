@@ -1,5 +1,6 @@
 package com.chinesedreamer.jira.biz.core.version.logic;
 
+import java.util.Date;
 import java.util.List;
 
 import com.chinesedreamer.jira.base.logic.BaseLogic;
@@ -15,4 +16,6 @@ public interface JiraVersionLogic extends BaseLogic<JiraVersion, Long>{
 	public JiraVersion findByJiraId(String jiraId);
 	
 	public List<JiraVersion> findByProjectJiraId(String projectJiraId);
+	
+	public List<JiraVersion> findByReleaseDateBetween(Date start, Date end);
 }

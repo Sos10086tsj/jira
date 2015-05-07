@@ -6,6 +6,6 @@ $(function() {
 	
 	//报表
 	$("#go_2_rpt").off("click").on("click", function (){
-		window.location.href = "/report";
+		window.location.href = ctx + "/report";
 	});
 });

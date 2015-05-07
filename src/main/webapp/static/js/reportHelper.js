@@ -17,6 +17,16 @@ reportHelper = {
 			return;
 		}
 		window.location.href = ctx + "/report/projectReportConfig/add?projectJiraId=" + projectJiraId + "&versionJiraId=" + versionJiraId;
+	},
+	
+	generateTimeScopeReport : function(){
+		var start = $("#js_start").val();
+		var end = $("#js_end").val();
+		if(start.length <= 0 || end.length <= 0){
+			alert("请填写时间！");
+			return;
+		}
+		window.location.href = ctx + "/report/showTimeScopeReport?start=" + start + "&end=" + end;
 	}
 };
 $(function() {

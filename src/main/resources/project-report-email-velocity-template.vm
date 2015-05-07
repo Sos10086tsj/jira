@@ -3,6 +3,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</head>
     <body>
+    
+    #foreach($report in $template.reports)
         <div>
         
         	<div>
@@ -14,21 +16,21 @@
 						<tbody>
 							<tr>
 								<td>项目</td>
-								<td>$template.project</td>
+								<td>$report.project</td>
 								<td>版本</td>
-								<td>$template.version</td>
+								<td>$report.version</td>
 								<td colspan="2">截止日期</td>
-								<td colspan="2">$template.releaseDateStr</td>
+								<td colspan="2">$report.releaseDateStr</td>
 							</tr>
 							<tr>
 								<td>总数</td>
-								<td>$template.total </td>
+								<td>$report.total </td>
 								<td>完成数</td>
-								<td>$template.completedNum </td>
+								<td>$report.completedNum </td>
 								<td>完成率</td>
-								<td>$template.completionRateStr /></td>
+								<td>$report.completionRateStr /></td>
 								<td>bug数</td>
-								<td>$template.bugNum </td>
+								<td>$report.bugNum </td>
 							</tr>
 						</tbody>
 					</table>
@@ -50,7 +52,7 @@
 								<th>Due Date</th>
 							</tr>
 						</thead>
-						#foreach($element in $template.uncompletedIssues)
+						#foreach($element in $report.uncompletedIssues)
 							<tr>
 								<td>$element.key</td>
 								<td>$element.summary</td>
@@ -78,7 +80,7 @@
 								<th>Due Date</th>
 							</tr>
 						</thead>
-						#foreach($element in $template.bugs)
+						#foreach($element in $report.bugs)
 							<tr>
 								<td>$element.key</td>
 								<td>$element.summary</td>
@@ -106,7 +108,7 @@
 								<th>Due Date</th>
 							</tr>
 						</thead>
-						#foreach($element in $template.completedIssues)
+						#foreach($element in $report.completedIssues)
 							<tr>
 								<td>$element.key</td>
 								<td>$element.summary</td>
@@ -120,5 +122,8 @@
 			</div>
 			
         </div>
+        
+    #end
+      
     </body>
 </html>

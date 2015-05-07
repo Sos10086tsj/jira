@@ -4,11 +4,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script type="text/javascript"
-	src="resources/plugins/jquery/jquery-2.1.1.js"></script>
-
-
-<script type="text/javascript" src="resources/js/homepageHelper.js"></script>
+<script src="${pageContext.request.contextPath}/static/plugins/jquery/jquery-2.1.1.js"/></script>
+<script src="${pageContext.request.contextPath}/static/js/homepageHelper.js"/></script>
+<script>
+	var ctx = '${pageContext.request.contextPath}';
+</script>
 <title>Jira Tools</title>
 </head>
 <body>

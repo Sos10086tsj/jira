@@ -3,8 +3,11 @@ package com.chinesedreamer.jira.biz.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -28,9 +31,12 @@ import com.chinesedreamer.jira.biz.service.JiraReportService;
 import com.chinesedreamer.jira.biz.sysconfig.constant.SysConfigConstant;
 import com.chinesedreamer.jira.biz.sysconfig.logic.SysConfigLogic;
 import com.chinesedreamer.jira.biz.sysconfig.model.SysConfig;
+import com.chinesedreamer.jira.biz.utils.DateUtil;
 import com.chinesedreamer.jira.biz.vo.JiraIssuePorjectReportComparator;
 import com.chinesedreamer.jira.biz.vo.JiraIssueVo;
 import com.chinesedreamer.jira.biz.vo.ProjectReportVo;
+import com.chinesedreamer.jira.biz.vo.TimeScopeReportVo;
+import com.chinesedreamer.jira.biz.vo.UserReportVo;
 
 /**
  * Description: 
@@ -155,6 +161,149 @@ public class JiraReportServiceImpl implements JiraReportService{
 		}else {
 			vo.setStatus("无");
 		}
+		if (null != jiraIssue.getTimeSpent()) {
+			vo.setTimeSpent(DateUtil.formatTimeTracking(jiraIssue.getTimeSpent()));
+		}
+		if (null != jiraIssue.getTimeEstemate()) {
+			vo.setTimeEstimated(DateUtil.formatTimeTracking(jiraIssue.getTimeEstemate()));
+		}
+		vo.setProject(this.jiraProjectLogic.findByJiraId(jiraIssue.getProject()).getName());
 		return vo;
+	}
+
+	@Override
+	public TimeScopeReportVo generateTimeScopeReport(Date start, Date end) {
+		//1. 找到相关的版本
+		SysConfig fluctuation =  this.sysConfigLogic.findByProperty(SysConfigConstant.RPT_TIME_SCOP_FLUCTUATION);
+		int inteval = Integer.parseInt(fluctuation.getPropertyValue());
+		List<JiraVersion> versions = this.jiraVersionLogic.findByReleaseDateBetween(
+				DateUtil.calculateDate(start, -1 * inteval),
+				DateUtil.calculateDate(end, 3 * inteval));
+		//2. 找到相关的项目-版本
+		List<ProjectReportVo> projects =  new ArrayList<ProjectReportVo>();
+		for (JiraVersion version : versions) {
+			JiraProject project = this.jiraProjectLogic.findByJiraId(version.getProjectJiraId());
+			ProjectReportVo vo = new ProjectReportVo();
+			vo.setProject(project.getName());
+			vo.setProjectJiraId(project.getJiraId());
+			vo.setVersion(version.getName());
+			vo.setVersionJiraId(version.getJiraId());
+			projects.add(vo);
+		}
+		//3. 统计issue
+		Map<String, List<JiraIssue>> userIssues = new HashMap<String, List<JiraIssue>>();
+		for (ProjectReportVo vo : projects) {
+			this.calculateIssues(vo, userIssues);
+		}
+		List<UserReportVo> users = this.generateUserReport(userIssues);
+		
+		TimeScopeReportVo timeScopReport = new TimeScopeReportVo();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		timeScopReport.setStartDate(format.format(start));
+		timeScopReport.setEndDate(format.format(end));
+		timeScopReport.setProjects(projects);
+		timeScopReport.setUsers(users);
+		return timeScopReport;
+	}
+	
+	private List<UserReportVo> generateUserReport(Map<String, List<JiraIssue>> userIssues) {
+		List<UserReportVo> users = new ArrayList<UserReportVo>();
+		for (String username : userIssues.keySet()) {
+			users.add(this.generateUserReportVo(username, userIssues.get(username)));
+		}
+		return users;
+	}
+	
+	private UserReportVo generateUserReportVo(String username, List<JiraIssue> issues){
+		UserReportVo vo = new UserReportVo();
+		vo.setUsername(this.jiraUserLogic.findByUsername(username).getDisplayName());
+		Integer totalNum = 0;
+		Integer completedNum = 0;
+		Integer bugNum = 0;
+		Integer totalTimeEstimated = 0;
+		Integer totalTimeSpent = 0;
+		List<JiraIssueVo> jiraIssueVos = new ArrayList<JiraIssueVo>();
+		Set<String> taskConfig = this.getConfig(SysConfigConstant.RPT_ISSUE_TYPE_TASK_LEVEL);
+		Set<String> closeConfig = this.getConfig(SysConfigConstant.RPT_ISSUE_STATUS_CLOSED_LEVEL);
+		Set<String> bugConfig = this.getConfig(SysConfigConstant.RPT_ISSUE_TYPE_BUG_LEVEL);
+		for (JiraIssue jiraIssue : issues) {
+			if (StringUtils.isNotEmpty(jiraIssue.getIssueType())) {
+				if (taskConfig.contains(jiraIssue.getIssueType())) {
+					totalNum += 1;
+					if (closeConfig.contains(jiraIssue.getStatus())) {
+						completedNum += 1;
+					}
+				}else if (bugConfig.contains(jiraIssue.getIssueType())) {
+					bugNum += 1;
+				}
+				if (null != jiraIssue.getTimeEstemate()) {
+					totalTimeEstimated += jiraIssue.getTimeEstemate();
+				}
+				if (null != jiraIssue.getTimeSpent()) {
+					totalTimeSpent += jiraIssue.getTimeSpent();
+				}
+				jiraIssueVos.add(this.convert2Vo(jiraIssue));
+			}
+		}
+		vo.setTotalNum(totalNum);
+		vo.setCompletedNum(completedNum);
+		vo.setBugNum(bugNum);
+		vo.setTotalTimeEstimated(DateUtil.formatTimeTracking(totalTimeEstimated));
+		vo.setTotalTimeSpent(DateUtil.formatTimeTracking(totalTimeSpent));
+		if (totalNum != 0) {
+			float rate = completedNum / totalNum * 1.0000f;
+			vo.setCompleteRate(rate * 100 + "%");
+		}
+		if (totalTimeEstimated != 0) {
+			float rate = (totalTimeSpent - totalTimeEstimated) / totalTimeEstimated * 1.0000f;
+			vo.setTotalTimeout(rate > 0 ? "超时" + rate * 1000 + "%" : "提前" + rate * 1000 + "%");
+		}
+		vo.setIssueVos(jiraIssueVos);
+		return vo;
+	}
+	
+	private void calculateIssues(ProjectReportVo vo, Map<String, List<JiraIssue>> userIssues) {
+		List<JiraIssueVersion> issueVersions = this.jiraIssueVersionLogic.findByProjectJiraIdAndVersionJiraId(vo.getProjectJiraId(), vo.getVersionJiraId());
+		Integer uncompletedIssues = 0;
+		Integer completedIssues = 0;
+		Integer bugs = 0;
+		Set<String> taskConfig = this.getConfig(SysConfigConstant.RPT_ISSUE_TYPE_TASK_LEVEL);
+		Set<String> closeConfig = this.getConfig(SysConfigConstant.RPT_ISSUE_STATUS_CLOSED_LEVEL);
+		Set<String> bugConfig = this.getConfig(SysConfigConstant.RPT_ISSUE_TYPE_BUG_LEVEL);
+		for (JiraIssueVersion jiraIssueVersion : issueVersions) {
+			JiraIssue jiraIssue = this.jiraIssueLogic.findByJiraId(jiraIssueVersion.getIssueJiraId());
+			//project 统计
+			if (StringUtils.isNotEmpty(jiraIssue.getIssueType())) {
+				if (taskConfig.contains(jiraIssue.getIssueType())) {
+					if (StringUtils.isNotEmpty(jiraIssue.getStatus())) {
+						if (closeConfig.contains(jiraIssue.getStatus())) {
+							completedIssues += 1;
+						}else {
+							uncompletedIssues += 1;
+						}
+					}
+				}else if (bugConfig.contains(jiraIssue.getIssueType())) {
+					bugs += 1;
+				}
+			}
+			vo.setTotal(uncompletedIssues + completedIssues + bugs);
+			vo.setCompletedNum(completedIssues);
+			vo.setBugNum(bugs);
+			if (uncompletedIssues + completedIssues + bugs != 0) {
+				float rate = completedIssues / (uncompletedIssues + completedIssues + bugs) * 1.0000f;
+				vo.setCompletionRateStr(rate * 100 + "%");
+			}
+			
+			//用户统计
+			if (null != jiraIssue.getAssigne()) {
+				String key = jiraIssue.getAssigne();
+				if (null == userIssues.get(key)) {
+					userIssues.put(key, new ArrayList<JiraIssue>());
+				}
+				List<JiraIssue> issues = userIssues.get(key);
+				issues.add(jiraIssue);
+				userIssues.put(key, issues);
+			}
+		}
 	}
 }

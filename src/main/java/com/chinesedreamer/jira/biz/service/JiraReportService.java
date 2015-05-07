@@ -1,6 +1,9 @@
 package com.chinesedreamer.jira.biz.service;
 
+import java.util.Date;
+
 import com.chinesedreamer.jira.biz.vo.ProjectReportVo;
+import com.chinesedreamer.jira.biz.vo.TimeScopeReportVo;
 
 /**
  * Description: jira报告相关
@@ -16,4 +19,12 @@ public interface JiraReportService {
 	 * @return
 	 */
 	public ProjectReportVo generateProjectReport(String projectJiraId, String versionJiraId);
+	
+	/**
+	 * 某段时间内的项目整体进度报告，用户详细进度报告
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public TimeScopeReportVo generateTimeScopeReport(Date start, Date end);
 }

@@ -1,5 +1,6 @@
 package com.chinesedreamer.jira.biz.core.version.logic.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -30,6 +31,11 @@ public class JiraVersionLogicImpl extends BaseLogicImpl<JiraVersion, Long> imple
 	@Override
 	public List<JiraVersion> findByProjectJiraId(String projectJiraId) {
 		return this.repository.findByProjectJiraId(projectJiraId);
+	}
+
+	@Override
+	public List<JiraVersion> findByReleaseDateBetween(Date start, Date end) {
+		return this.repository.findByReleaseDateBetween(start, end);
 	}
 
 }

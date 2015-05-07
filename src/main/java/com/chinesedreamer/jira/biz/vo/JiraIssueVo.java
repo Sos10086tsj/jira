@@ -18,4 +18,9 @@ public @Getter @Setter class JiraIssueVo {
 	private Date dueDate;
 	private String dueDateStr;
 	private String status;
+	
+	//user report使用
+	private String timeSpent;//耗时
+	private String timeEstimated;//预估时间
+	private String project;//项目
 }

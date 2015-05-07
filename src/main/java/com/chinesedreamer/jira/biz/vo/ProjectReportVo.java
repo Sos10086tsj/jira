@@ -14,7 +14,9 @@ import lombok.Setter;
  */
 public @Getter @Setter class ProjectReportVo {
 	//版本信息
+	private String projectJiraId;
 	private String project;//项目
+	private String versionJiraId;
 	private String version;//版本
 	private Date releaseDate;//版本截止日期
 	private String releaseDateStr = "";

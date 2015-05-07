@@ -13,4 +13,5 @@ public class SysConfigConstant {
 	public static String RPT_ISSUE_TYPE_TASK_LEVEL = "RPT_ISSUE_TYPE_TASK_LEVEL";//task级别的issue配置
 	public static String RPT_ISSUE_TYPE_BUG_LEVEL = "RPT_ISSUE_TYPE_BUG_LEVEL";//bug级别的issue配置
 	public static String RPT_ISSUE_STATUS_CLOSED_LEVEL = "RPT_ISSUE_STATUS_CLOSED_LEVEL";//关闭任务配置
+	public static String RPT_TIME_SCOP_FLUCTUATION = "RPT_TIME_SCOP_FLUCTUATION";//周期性统计的时间浮动配置
 }

@@ -15,7 +15,8 @@
 <body>
 	<div>
 		<div>报表列表</div>
-		<div><a href="${pageContext.request.contextPath}/report/projectReport">生成project报表</a></div>
+		<div><a href="${pageContext.request.contextPath}/report/projectReport">Project Report</a></div>
+		<div><a href="${pageContext.request.contextPath}/report/timeScopeReport">Time Scope Report</a></div>
 		<div><a href="${pageContext.request.contextPath}/report/projectReportConfig">report 配置</a></div>
 	</div>
 </body>
