@@ -20,7 +20,16 @@
 								<td colspan="2">截止日期</td>
 								<td colspan="2">$template.releaseDateStr</td>
 							</tr>
-							
+							<tr>
+								<td>总数</td>
+								<td>$template.total </td>
+								<td>完成数</td>
+								<td>$template.completedNum </td>
+								<td>完成率</td>
+								<td>$template.completionRateStr /></td>
+								<td>bug数</td>
+								<td>$template.bugNum </td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
