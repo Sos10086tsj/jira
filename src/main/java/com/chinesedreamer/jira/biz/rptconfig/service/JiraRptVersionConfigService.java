@@ -3,6 +3,7 @@ package com.chinesedreamer.jira.biz.rptconfig.service;
 import java.util.List;
 
 import com.chinesedreamer.jira.biz.rptconfig.model.JiraRptVersionConfig;
+import com.chinesedreamer.jira.biz.vo.JiraRptVersionConfigVo;
 
 /**
  * Description: 
@@ -13,4 +14,7 @@ import com.chinesedreamer.jira.biz.rptconfig.model.JiraRptVersionConfig;
 public interface JiraRptVersionConfigService {
 	public List<JiraRptVersionConfig> findByProjectJiraId(String projectJiraId);
 	public List<JiraRptVersionConfig> getAll();
+	public void addConfig(String projectJiraId,String versionJiraId);
+	public void deleteConfig(String projectJiraId,String versionJiraId);
+	public List<JiraRptVersionConfigVo> getAllVos();
 }

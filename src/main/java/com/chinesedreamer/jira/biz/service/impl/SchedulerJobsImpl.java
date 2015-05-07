@@ -64,7 +64,7 @@ public class SchedulerJobsImpl implements SchedulerJobs{
 			recipient.setTo(new String[]{"taosj@cyyun.com"});
 			recipient.setCc(new String[]{"407414976@qq.com"});
 			String templatePath = "project-report-email-velocity-template.vm";
-			this.ipmEmailSender.sendTemplateEmail("paris1989@163.com", recipient, "Test Project", templatePath, vo);
+			this.ipmEmailSender.sendTemplateEmail("paris1989@163.com", recipient, "Project Report", templatePath, vo);
 		}
 		logger.info("********* daily report task end.");
 	}

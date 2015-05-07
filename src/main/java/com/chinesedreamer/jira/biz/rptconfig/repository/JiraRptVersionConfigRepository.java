@@ -13,4 +13,5 @@ import com.chinesedreamer.jira.biz.rptconfig.model.JiraRptVersionConfig;
  */
 public interface JiraRptVersionConfigRepository extends BaseRepository<JiraRptVersionConfig, Long>{
 	public List<JiraRptVersionConfig> findByProjectJiraId(String projectJiraId);
+	public JiraRptVersionConfig findByProjectJiraIdAndVersionJiraId(String projectJiraId, String versionJiraId);
 }

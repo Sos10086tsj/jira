@@ -32,4 +32,10 @@ public class JiraRptVersionConfigLogicImpl extends BaseLogicImpl<JiraRptVersionC
 		return this.repository.findAll();
 	}
 
+	@Override
+	public JiraRptVersionConfig findByProjectJiraIdAndVersionJiraId(
+			String projectJiraId, String versionJiraId) {
+		return this.repository.findByProjectJiraIdAndVersionJiraId(projectJiraId, versionJiraId);
+	}
+
 }

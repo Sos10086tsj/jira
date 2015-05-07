@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.chinesedreamer.jira.biz.core.project.service.JiraProjectService;
 import com.chinesedreamer.jira.biz.core.version.model.JiraVersion;
 import com.chinesedreamer.jira.biz.core.version.service.JiraVersionService;
+import com.chinesedreamer.jira.biz.rptconfig.service.JiraRptVersionConfigService;
 import com.chinesedreamer.jira.biz.service.JiraReportService;
 import com.chinesedreamer.jira.core.JiraException;
 
@@ -32,6 +33,8 @@ public class ReportController {
 	private JiraVersionService jiraVersionService;
 	@Resource
 	private JiraReportService jiraReportService;
+	@Resource
+	private JiraRptVersionConfigService jiraRptVersionConfigService;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public String index(Model model){
@@ -54,5 +57,29 @@ public class ReportController {
 	public String generateProjectReport(Model model,String projectJiraId,String versionJiraId){
 		model.addAttribute("report", this.jiraReportService.generateProjectReport(projectJiraId, versionJiraId));
 		return "/report/showProjectReport";
+	}
+	
+	/**
+	 * 配置
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "projectReportConfig", method = RequestMethod.GET)
+	public String showProjectReportConfig(Model model){
+		model.addAttribute("configs", this.jiraRptVersionConfigService.getAllVos());
+		model.addAttribute("projects", this.jiraProjectService.getAllProjects());
+		return "/report/projectReportConfig";
+	}
+	
+	@RequestMapping(value = "projectReportConfig/add", method = RequestMethod.POST)
+	public String addProjectReportConfig(Model model, String projectJiraId,String versionJiraId){
+		this.jiraRptVersionConfigService.addConfig(projectJiraId, versionJiraId);
+		return "redirect:/report/projectReportConfig";
+	}
+	
+	@RequestMapping(value = "projectReportConfig/delete", method = RequestMethod.GET)
+	public String deleteProjectReportConfig(Model model, String projectJiraId,String versionJiraId){
+		this.jiraRptVersionConfigService.deleteConfig(projectJiraId, versionJiraId);
+		return "redirect:/report/projectReportConfig";
 	}
 }

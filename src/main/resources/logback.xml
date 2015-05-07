@@ -12,7 +12,7 @@
 	      <level>INFO</level>   
 	    </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.dir}/info-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/opt/log/jira/info-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>15</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -25,7 +25,7 @@
 	      <level>ERROR</level>   
 	    </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.dir}/error-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/opt/log/jira/error-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>15</maxHistory>
         </rollingPolicy>
         <encoder>

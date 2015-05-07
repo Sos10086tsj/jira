@@ -13,5 +13,6 @@ import com.chinesedreamer.jira.biz.rptconfig.model.JiraRptVersionConfig;
  */
 public interface JiraRptVersionConfigLogic extends BaseLogic<JiraRptVersionConfig, Long>{
 	public List<JiraRptVersionConfig> findByProjectJiraId(String projectJiraId);
+	public JiraRptVersionConfig findByProjectJiraIdAndVersionJiraId(String projectJiraId, String versionJiraId);
 	public List<JiraRptVersionConfig> findAll();
 }

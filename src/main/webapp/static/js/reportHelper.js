@@ -7,6 +7,16 @@ reportHelper = {
 			return;
 		}
 		window.location.href = ctx + "/report/showProjectReport?projectJiraId=" + projectJiraId + "&versionJiraId=" + versionJiraId;
+	},
+	
+	addConfig : function(){
+		var projectJiraId = $("#js_rpt_project").val();
+		var versionJiraId = $("#js_rpt_project_version").val();
+		if(projectJiraId.length <= 0 || versionJiraId.length <= 0){
+			alert("请选择项目与版本！");
+			return;
+		}
+		window.location.href = ctx + "/report/projectReportConfig/add?projectJiraId=" + projectJiraId + "&versionJiraId=" + versionJiraId;
 	}
 };
 $(function() {
